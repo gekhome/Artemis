@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "Contact detail";
+}
+
+@section Footer 
+{
+    <partial name="_Footer" />
+}
+
+
+<div class="container text-center">
+    <section class="jumbotron mb-4">
+        <h1>@ViewBag.Title</h1>
+        <p class="lead">@ViewBag.Message</p>
+    </section>
+
+    <div class="card shadow-sm">
+        <address class="mt-4 fs-6">
+            11A King George st. & 31 Laodikis st.<br />
+            Glyfada, 16674, Athens Greece <br />
+            <abbr title="Mobile phone">Phone:</abbr>
+            (+30) 697 00 888 92
+        </address>
+
+        <address class="mt-4 fs-6">
+            <strong>Support:</strong> <a href="mailto:gekhome@hotmail.com">gekhome@hotmail.com</a><br />
+            <strong>Marketing:</strong> <a href="mailto:gek.egk@gmail.com">gek.egk@gmail.com</a>
+        </address>
+    </div>
+</div>

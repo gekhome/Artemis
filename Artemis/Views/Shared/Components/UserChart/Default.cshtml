@@ -1,0 +1,53 @@
+﻿@model IEnumerable<UserChartModel>
+
+@{
+    string width = ViewBag.Width + "px";
+    string height = ViewBag.Height + "px";
+}
+
+<style>
+    .chart {
+        margin: auto;
+        min-width: @width;
+        min-height: @height;
+        box-shadow: 2px 2px 1px 1px #e6e6e6;
+        border-radius: 0.3rem;
+        background-color: whitesmoke;
+    }
+
+    .chart-area {
+        margin: auto;
+        min-width: @width;
+        min-height: @height;
+    }
+</style>
+
+<div class="my-4 card chart">
+    <div class="card-body">
+        <h5 class="card-title">Distribution of registered user roles</h5>
+        <p class="card-text">
+            @(Html.Kendo().Chart(Model)
+                .Name("chart")
+                .Title(title => title
+                .Text("Distribution of Registered User Types")
+                .Position(ChartTitlePosition.Bottom))
+                .Legend(legend => legend
+                .Visible(false))
+                .ChartArea(chart => chart
+                .Background("transparent"))
+                .HtmlAttributes(new { @class="chart-area", style = "background: center no-repeat url(" + @Url.Content("~/images/world-map.png") })
+                .Series(series =>
+                {
+                    series.Pie(model => model.Percentage, model => model.UserType)
+                    .ColorField("Color")
+                    .Labels(labels => labels
+                    .Template("#= category #: \n #= value#%")
+                    .Background("transparent")
+                    .Visible(true))
+                    .StartAngle(150);
+                })
+                .Tooltip(tooltip => tooltip.Visible(true).Format("{0}%"))
+            )
+        </p>
+    </div>
+</div>

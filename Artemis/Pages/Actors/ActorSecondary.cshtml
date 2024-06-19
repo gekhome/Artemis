@@ -1,0 +1,105 @@
+﻿@page
+@model Artemis.Pages.Actors.ActorSecondaryModel
+
+@{
+    Layout = "_LayoutMin";
+    ViewData["Title"] = "Additional actor data";
+
+    int actorId = Model.Actor.ActorId;
+    string header = Model.Actor.FullName + " (" + Model.Actor.Occupations?.ToLower() + ")";
+}
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@Html.AntiForgeryToken()
+
+<partial name="_Message" for="StatusMessage" />
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between">
+        <page-header add-title="Additional actor data"></page-header>
+        <div class="d-inline-flex float-end">
+            <button class="gek-btn-danger" onclick="javascript:window.close();opener.window.focus();">Close</button>
+        </div>
+    </div>
+    <hr />
+    <h4 class="gek-header text-center">@header</h4>
+
+    <div class="col-12 text-center card shadow-sm mt-4">
+        <h5 class="py-2">Selected Filmography</h5>
+        <partial name="_ActorFilmography" />
+    </div>
+
+    <div class="col-12 text-center card shadow-sm mt-4">
+        <h5 class="py-2">Gallery Images</h5>
+        <partial name="_ActorGallery" />
+    </div>
+
+</div>
+
+<div id="partialDiv">
+    <partial name="_GalleryEdit" model="Model.Gallery" />
+</div>
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        function forgeryToken() {
+            var actorID = @actorId;
+            // with this we can send more than one parameters
+            return $.extend(true, {}, kendo.antiForgeryTokens(), { actorId: actorID });
+        }
+
+        function RowEdit(e) {
+            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+            var galleryID = dataItem.GalleryId;
+
+            // Handle data source of partial view
+            $.ajax({
+                url: '/Actors/ActorSecondary?handler=GalleryRecord&id=' + galleryID,
+                type: 'GET',
+                data: "",
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    $("#partialDiv").html(response);
+                    $("#modal-partial").modal('show');
+                },
+                failure: function () {
+                    MessageBoxAlert("There was a problem acquiring data.", "Error");
+                }
+            });
+        }
+
+        function error_handler1(e) {
+            if (e.errors) {
+                var message = "";
+                $.each(e.errors, function (key, value) {
+                    if ('errors' in value) {
+                        $.each(value.errors, function () {
+                            message += this + "<br/>";
+                        });
+                    }
+                });
+                MessageBoxAlert(message, "Error");
+            }
+        }
+
+        function error_handler2(e) {
+            if (e.errors) {
+                var message = "";
+                $.each(e.errors, function (key, value) {
+                    if ('errors' in value) {
+                        $.each(value.errors, function () {
+                            message += this + "<br/>";
+                        });
+                    }
+                });
+                MessageBoxAlert(message, "Error");
+            }
+        }
+
+    </script>
+}
+
+

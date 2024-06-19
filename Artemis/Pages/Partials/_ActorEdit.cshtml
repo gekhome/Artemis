@@ -1,0 +1,114 @@
+﻿@model ActorViewModel
+
+@{
+    Layout = null;
+}
+
+<div class="modal fade" id="modal-partial" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="min-width:700px;max-height:600px">
+            <div class="modal-header">
+                <h5 class="modal-title">Actor Editor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <form method="post" asp-page-handler="ActorEdit" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <div class="modal-body form-horizontal">
+                    @Html.HiddenFor(model => model.ActorId)
+                    <div class="form-group">
+                        <label asp-for="FullName" class="form-label"></label>
+                        <input type="text" asp-for="FullName" class="form-control" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="BirthDate" class="form-label"></label>
+                        <kendo-datepicker name='BirthDate' for="BirthDate" format="dd/MM/yyyy"></kendo-datepicker>
+                        <span asp-validation-for="BirthDate" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Age" class="form-label"></label>
+                        <input type="number" asp-for="Age" class="form-control" disabled />
+                        <span asp-validation-for="Age" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Gender" class="form-label"></label>
+                        <kendo-dropdownlist name="Gender" for="Gender"
+                                            datatextfield="GenderText"
+                                            datavaluefield="GenderId"
+                                            option-label="Select gender..."
+                                            auto-bind="true">
+                            <datasource server-filtering="false">
+                                <transport>
+                                    <read url="@Url.PageLink(pageName:"/Actors/ActorMain", pageHandler:"Genders_Read")" />
+                                </transport>
+                            </datasource>
+                        </kendo-dropdownlist>
+                        <span asp-validation-for="Gender" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Height" class="form-label"></label>
+                        <input type="text" asp-for="Height" class="form-control" />
+                        <span asp-validation-for="Height" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="BirthPlace" class="form-label"></label>
+                        <input type="text" asp-for="BirthPlace" class="form-control" />
+                        <span asp-validation-for="BirthPlace" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Country" class="form-label"></label>
+                        <kendo-dropdownlist name="Country" for="Country"
+                                            datatextfield="Name"
+                                            datavaluefield="CountryId"
+                                            auto-bind="true">
+                            <datasource server-filtering="false">
+                                <transport>
+                                    <read url="@Url.PageLink(pageName:"/Actors/ActorMain", pageHandler:"Countries_Read")" />
+                                </transport>
+                            </datasource>
+                        </kendo-dropdownlist>
+                        <span asp-validation-for="Country" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Occupations" style="width: 100%;" class="form-label"></label>
+                        <input type="text" asp-for="Occupations" class="form-control" />
+                        <span asp-validation-for="Occupations" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="BioSummary" style="width: 100%;" class="form-label"></label>
+                        <textarea type="text" asp-for="BioSummary" rows="8" cols="85"></textarea>
+                        <span asp-validation-for="BioSummary" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Rating" class="form-label"></label>
+                        <kendo-rating name="Rating" for="Rating" min="1" max="10">
+                            <label template="<span>#=value# out of #=maxValue#</span>" />
+                        </kendo-rating>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Photo" style="width: 100%;" class="col-md-2 form-label"></label>
+                        @if (Model?.Photo != null)
+                        {
+                            <img id="actorPicture" style="width:150px;height:225px; object-fit:cover; border: 1px solid dimgray; border-radius: 4px"
+                                 src="data:image/*;base64,@(Convert.ToBase64String(Model.Photo))">
+                        }
+                        else
+                        {
+                            <img id="actorPicture" style="width:150px;height:225px; object-fit:cover; border: 1px solid dimgray; border-radius:4px" src="">
+                        }
+                        <input type="file" accept=".png,.jpg,.jpeg,.gif,.tif,.tiff" asp-for="Photo"
+                               style="border:0px!important;padding: 0px;padding-top: 10px;padding-bottom: 30px;"
+                               onchange="document.getElementById('actorPicture').src = window.URL.createObjectURL(this.files[0])" />
+                        <span asp-validation-for="Photo" class="text-danger"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,131 @@
+﻿{
+   "CodeGenerationMode": 3,
+   "ContextClassName": "ArtemisDbContext",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": "Data",
+   "OutputPath": "Models",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "Artemis.Dal",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "T4TemplatePath": null,
+   "Tables": [
+      {
+         "Name": "[dbo].[Actor]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ActorFilms]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ActorGallery]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Country]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Film]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[FilmActor]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[FilmCompany]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[FilmCountry]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Genders]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Languages]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[MovieGenre]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[MovieStudio]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[MusicGenre]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[MusicStudio]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Regions]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Years]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ActorCountRegions]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[ActorGenderCount]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[ActorInfo]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[ActorRatingCount]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[FilmActors]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[FilmInfo]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[StudiosInFilms]",
+         "ObjectType": 3
+      }
+   ],
+   "UiHint": "gek-rog\\sqlexpress.Artemis.dbo",
+   "UncountableWords": null,
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDateOnlyTimeOnly": false,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": false,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": true,
+   "UseNoDefaultConstructor": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": true,
+   "UseSchemaFolders": false,
+   "UseSchemaNamespaces": false,
+   "UseSpatial": false,
+   "UseT4": false
+}

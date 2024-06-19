@@ -1,0 +1,109 @@
+﻿
+@{
+    ViewData["Title"] = "Browse users";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between">
+        <page-header add-title="Users browsing page"></page-header>
+        <div class="d-flex float-end me-2"><a class="btn btn-secondary" asp-action="Index" asp-controller="Home">Home page</a></div>
+    </div>
+    <hr />
+
+    <div class="mb-2">
+        <div class="body-content">
+            @(Html.Kendo().ListView<AppUserViewModel>()
+                .Name("listView")
+                .TagName("div")
+                .ClientTemplateId("template")
+                .DataSource(dataSource => dataSource
+                .Ajax()
+                .Read(read => read.Action("Users_Read", "Users"))
+                .PageSize(10))
+                .Pageable(pageable => pageable
+                .Refresh(true)
+                .PageSizes(true)
+                .ButtonCount(5))
+                .Scrollable()
+            )
+        </div>
+    </div>
+    <div class="body-content row">
+        <div class="col-4">
+            <vc:user-summary theme-name="primary" />
+        </div>
+        <div class="col-8">
+            <vc:user-chart width="700" height="500" />
+        </div>
+    </div>
+</div>
+
+<script type="text/template" id="template">
+    <div class="card card-outline-primary m-1 p-1 user">
+        <img src="data:image/*;base64, #:ProfileImage#"/>
+        <h3>#:FullName#</h3>
+        <p><label>Email:</label>#:Email#</p>
+        <p><label>Phone:</label>#:PhoneNumber#</p>
+        <p><label>Birthdate:</label>
+            <span class="badge rounded-pill bg-secondary text-white" style="float:right">
+                #:kendo.toString(BirthDate, "d")#
+            </span>
+        </p>
+        <p><label>Country:</label>
+            <span class="badge rounded-pill bg-secondary text-white" style="float:right">
+                #:Country#
+            </span>
+        </p>
+    </div>
+</script>
+
+<style>
+    #listView {
+        padding: 10px 5px;
+        margin-bottom: -1px;
+        min-height: 600px;
+        font: inherit;
+    }
+
+    .user {
+        float: left;
+        position: relative;
+        width: 300px;
+        height: 380px;
+        margin: 0 5px;
+        padding: 0;
+        background-color:whitesmoke;
+        box-shadow: 2px 2px 1px 1px #e6e6e6;
+    }
+
+    .user img {
+        width: 190px;
+        height: 190px;
+        object-fit: cover;
+        border-radius: 20px;
+    }
+
+    .user p {
+        padding: 2px 4px;
+        margin: 2px 2px;
+        overflow-wrap: break-word;
+    }
+
+    .user label {
+        padding: 0 4px 2px 0;
+        font-weight: 600;
+        color: #555;
+    }
+
+    .user h3 {
+        margin: 0;
+        padding: 3px 5px 3px 2px;
+        max-width: 190px;
+        overflow: hidden;
+        line-height: 1.1em;
+        font-size: .9em;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: #444;
+    }
+</style>

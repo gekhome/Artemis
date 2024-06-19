@@ -1,0 +1,97 @@
+﻿<!-- Sidebar menu -->
+
+<nav class="flex-shrink-0 p-3 sidebar" id="sidebar" style="display:none">
+    <a href="/" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
+        <img src="~/images/letter-a-logo-black.png" width="26px" height="26px" class="roundborder" />
+        <span class="ps-2 fs-4 fw-semibold">Navigation</span>
+    </a>
+    <ul class="list-unstyled ps-0">
+        <li class="mb-2">
+            <button type="button" class="btn-toggle align-items-center rounded collapsed magnify-2" data-bs-toggle="collapse" data-bs-target="#movies-collapse" aria-expanded="false">
+                Movies
+            </button>
+            <div class="collapse" id="movies-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a asp-page="/Movies/FilmMain" class="link-dark rounded magnify-1">Manage movies</a></li>
+                    <li><a asp-page="/Movies/FilmBrowser" class="link-dark rounded magnify-1">Browse movies</a></li>
+                    <li><a asp-page="/Movies/FilmActors" class="link-dark rounded magnify-1">Movies and actors</a></li>
+                    <li><a asp-page="/Movies/StudiosFilms" class="link-dark rounded magnify-1">Studios and movies</a></li>
+                    <li><a href="#" class="link-dark rounded magnify-1">Print reports</a></li>
+                    <li><a class="link-dark rounded magnify-1" asp-controller="Demo" asp-action="Index">Demo Page</a></li>
+                </ul>
+            </div>
+        </li>
+        <li class="mb-2">
+            <button type="button" class="btn-toggle align-items-center rounded collapsed magnify-2" data-bs-toggle="collapse" data-bs-target="#actors-collapse" aria-expanded="false">
+                Actors
+            </button>
+            <div class="collapse" id="actors-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a asp-page="/Actors/ActorMain" class="link-dark rounded magnify-1">Manage actors</a></li>
+                    <li><a asp-page="/Actors/ActorBrowser" class="link-dark rounded magnify-1">Browse actors</a></li>
+                    <li><a asp-page="/Actors/ActorFilms" class="link-dark rounded magnify-1">Actor filmography</a></li>
+                    <li><a asp-page="/Actors/ActorGalleries" class="link-dark rounded magnify-1">Actor gallery</a></li>
+                    <li><a asp-page="/Actors/ActorStatistics" class="link-dark rounded magnify-1">Actor statistics</a></li>
+                    <li><a href="#" class="link-dark rounded magnify-1">Print reports</a></li>
+                </ul>
+            </div>
+        </li>
+        <li class="mb-2">
+            <button type="button" class="btn-toggle align-items-center rounded collapsed magnify-2" data-bs-toggle="collapse" data-bs-target="#music-collapse" aria-expanded="false">
+                Music
+            </button>
+            <div class="collapse" id="music-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a href="#" class="link-dark rounded magnify-1">Manage video clips</a></li>
+                    <li><a href="#" class="link-dark rounded magnify-1">Browse video clips</a></li>
+                    <li><a href="#" class="link-dark rounded magnify-1">Print reports</a></li>
+                </ul>
+            </div>
+        </li>
+        <li class="mb-2">
+            <button type="button" class="btn-toggle align-items-center rounded collapsed magnify-2" data-bs-toggle="collapse" data-bs-target="#artists-collapse" aria-expanded="false">
+                Artists
+            </button>
+            <div class="collapse" id="artists-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a href="#" class="link-dark rounded magnify-1">Manage artists</a></li>
+                    <li><a href="#" class="link-dark rounded magnify-1">Browse artists</a></li>
+                    <li><a href="#" class="link-dark rounded magnify-1">Manage albums</a></li>
+                    <li><a href="#" class="link-dark rounded magnify-1">Print reports</a></li>
+                </ul>
+            </div>
+        </li>
+        <li class="border-top my-3"></li>
+        <li class="mb-2">
+            <button type="button" class="btn-toggle align-items-center rounded collapsed magnify-2" data-bs-toggle="collapse" data-bs-target="#settings-collapse" aria-expanded="false">
+                Settings
+            </button>
+            <div class="collapse" id="settings-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a asp-action="MovieGenres" asp-controller="Setup" class="link-dark rounded magnify-1">Movie genres</a></li>
+                    <li><a asp-action="MusicGenres" asp-controller="Setup" class="link-dark rounded magnify-1">Music genres</a></li>
+                    <li><a asp-action="MovieStudios" asp-controller="Setup" class="link-dark rounded magnify-1">Movie studios</a></li>
+                    <li><a asp-action="MusicStudios" asp-controller="Setup" class="link-dark rounded magnify-1">Music studios</a></li>
+                    <li><a asp-action="Countries" asp-controller="Setup" class="link-dark rounded magnify-1">Countries</a></li>
+                    <li><a asp-page="/Setup/Languages" class="link-dark rounded magnify-1">Languages</a></li>
+                    <li><a asp-page="/Setup/Years" class="link-dark rounded magnify-1">Years</a></li>
+                </ul>
+            </div>
+        </li>
+        <li class="mb-2">
+            <button class="btn-toggle align-items-center rounded collapsed magnify-2" data-bs-toggle="collapse" data-bs-target="#accounts-collapse" aria-expanded="false">
+                Accounts
+            </button>
+            <div class="collapse" id="accounts-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a asp-action="UsersRoles" asp-controller="Users" class="link-dark rounded magnify-1">Users and roles</a></li>
+                    <li><a asp-action="ListClaims" asp-controller="Claims" class="link-dark rounded magnify-1">Users and claims</a></li>
+                    <li><a asp-action="ListRoles" asp-controller="Roles" class="link-dark rounded magnify-1">Manage roles</a></li>
+                    <li><a asp-action="BrowseUsers" asp-controller="Users" class="link-dark rounded magnify-1">Browse users</a></li>
+                </ul>
+            </div>
+        </li>
+    </ul>
+</nav>
+
+

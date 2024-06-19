@@ -1,0 +1,48 @@
+﻿
+@{
+    Layout = null;
+}
+
+@(Html.Kendo().Grid<ActorFilmViewModel>()
+    .Name("gridFilmography")
+    .HtmlAttributes(new { style = "font-size:16px" })
+    .Columns(columns =>
+    {
+        columns.ForeignKey(m => m.Year, (IEnumerable<Years>)ViewData["years"]!, "Year", "Year")
+            .Width(140).Media("(min-width: 150px)");
+        columns.Bound(m => m.Title).Width(400);
+        columns.Bound(m => m.Role).Width(300);
+        columns.Bound(m => m.Notes).Width(300);
+        columns.Command(command => { command.Destroy(); }).Width(150);
+    })
+    .ToolBar(toolbar =>
+    {
+        toolbar.Create();
+        toolbar.Save();
+    })
+    .Editable(editable => editable.Mode(GridEditMode.InCell))
+    .Navigatable()
+    .Sortable()
+    .Filterable()
+    .Scrollable(scr => scr.Height(300))
+    .Pageable(pageable => pageable
+    .Refresh(true)
+    .PageSizes(true)
+    .ButtonCount(5))
+    .DataSource(source => source
+    .Ajax()
+    .PageSize(40)
+    .Batch(true)
+    .ServerOperation(false)
+    .Model(model =>
+    {
+        model.Id(m => m.Id);
+        model.Field(m => m.Year).DefaultValue(ViewData["defaultYear"]);
+    })
+    .Create(create => create.Url("ActorSecondary?handler=FilmographyCreate").Data("forgeryToken"))
+    .Read(read => read.Url("ActorSecondary?handler=FilmographyRead").Data("forgeryToken"))
+    .Update(update => update.Url("ActorSecondary?handler=FilmographyUpdate").Data("forgeryToken"))
+    .Destroy(destroy => destroy.Url("ActorSecondary?handler=FilmographyDestroy").Data("forgeryToken"))
+    .Events(events => events.Error("error_handler1"))
+    )
+)

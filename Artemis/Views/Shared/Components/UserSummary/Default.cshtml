@@ -1,0 +1,76 @@
+﻿@model UserSummaryViewModel
+
+@{
+}
+
+<div class="my-4 fs-4 border shadow-sm p-4">
+    @if(Model != null)
+    {
+        <div class="d-inline-flex summary">
+            <h5>Total users: </h5>
+            <label class="badge rounded-pill px-4 py-1 bg-@ViewBag.themeName text-white flex-md-grow-1 float-end">
+                @Model?.TotalUsers?.ToString("N0")
+            </label>
+        </div>
+        <div class="d-inline-flex summary">
+            <h5>Basic users: </h5>
+            <label class="badge rounded-pill px-4 py-1 bg-@ViewBag.themeName text-white flex-md-grow-1 float-end">
+                @Model?.BasicUsers?.ToString("N0")
+            </label>
+        </div>
+        <div class="d-inline-flex summary">
+            <h5>Moderators: </h5>
+            <label class="badge rounded-pill px-4 py-1 bg-@ViewBag.themeName text-white flex-md-grow-1 float-end">
+                @Model?.Moderators?.ToString("N0")
+            </label>
+        </div>
+        <div class="d-inline-flex summary">
+            <h5>Administrators: </h5>
+            <label class="badge rounded-pill px-4 py-1 bg-@ViewBag.themeName text-white flex-md-grow-1 float-end">
+                @Model?.Administrators?.ToString("N0")
+            </label>
+        </div>
+    }
+    else
+    {
+        <span class="badge rounded-pill bg-primary text-white d-inline-flex" style="float:right">
+            <label>No summary data available.</label>
+        </span>
+    }
+</div>
+
+
+<style>
+
+    .summary {
+        position: relative;
+        margin: 0 5px;
+        padding: 0;
+    }
+
+    .summary label {
+        font-size: 14px;
+        padding: 2px 4px;
+        margin: 2px 2px;
+        overflow-wrap: break-word;
+    }
+
+    .summary label {
+        padding: 0 4px 2px 0;
+        font-weight: 600;
+        color: #555;
+    }
+
+    .summary h5 {
+        margin: 0;
+        padding: 2px 6px 4px 2px;
+        min-width: 190px;
+        overflow: hidden;
+        line-height: 1.1em;
+        font-size: 1.02rem;
+        font-weight: 600;
+/*        text-transform: uppercase;
+*/        color: dimgray;
+    }
+
+</style>

@@ -1,0 +1,74 @@
+﻿@model CountryViewModel
+
+@{
+    Layout = null;
+}
+
+<div class="modal fade" id="modal-partial" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Country Edit</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <form method="post" asp-action="CountryEdit" asp-controller="Setup" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <div class="modal-body form-horizontal">
+                    @Html.HiddenFor(model => model.CountryId)
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Name, new { @class="col-md-2 form-label" })
+                        <input type="text" asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Capital, new { @class="col-md-2 form-label" })
+                        <input type="text" asp-for="Capital" class="form-control" />
+                        <span asp-validation-for="Capital" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Population, new { @class="col-md-2 form-label" })
+                        <input type="number" asp-for="Population" class="form-control" />
+                        <span asp-validation-for="Population" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Region" class="form-label"></label>
+                        <kendo-dropdownlist name="Region" for="Region"
+                                            datatextfield="RegionText"
+                                            datavaluefield="RegionId"
+                                            auto-bind="true"
+                                            option-label="Select a region...">
+                            <datasource server-filtering="false">
+                                <transport>
+                                    <read url="@Url.Action("Regions_Read", "Setup")" />
+                                </transport>
+                            </datasource>
+                        </kendo-dropdownlist>
+                        <span asp-validation-for="Region" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Flag" style="width: 100%;" class="col-md-2 form-label"></label>
+                        @if (Model?.Flag != null)
+                        {
+                            <img id="flagPicture" style="width:64px;height:64px; object-fit:cover; border: 1px solid dimgray; border-radius: 4px"
+                                 src="data:image/*;base64,@(Convert.ToBase64String(Model.Flag))">
+                        }
+                        else
+                        {
+                            <img id="flagPicture" style="width:64px;height:64px; object-fit:cover; border: 1px solid dimgray; border-radius:4px" src="">
+                        }
+                        <input type="file" accept=".png,.jpg,.jpeg,.gif,.tif,.tiff" asp-for="Flag"
+                               style="border:0px!important;padding: 0px;padding-top: 10px;padding-bottom: 30px;"
+                               onchange="document.getElementById('flagPicture').src = window.URL.createObjectURL(this.files[0])" />
+                        <span asp-validation-for="Flag" class="text-danger"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

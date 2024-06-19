@@ -1,0 +1,88 @@
+﻿@page
+@model Artemis.Pages.Setup.YearsModel
+@{
+    ViewData["Title"] = "Years setup";
+}
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@Html.AntiForgeryToken()
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between">
+        <page-header add-title="Years setup"></page-header>
+        <div class="d-inline-flex float-end">
+            <a class="gek-btn-danger" asp-page="Years" asp-page-handler="Initialize" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Seed year values to database">
+                Initialize
+            </a>
+            <button class="gek-btn-success ms-2" onclick="RefreshGrid()">Refresh</button>
+            <a class="gek-btn-primary ms-2" asp-action="Index" asp-controller="Home">Home</a>
+        </div>
+    </div>
+    <hr />
+
+    <div class="mb-2">
+        @(Html.Kendo().Grid<Years>()
+            .Name("grid")
+            .Columns(columns =>
+            {
+                columns.Bound(m => m.Year).Width(200);
+                columns.Command(command => { command.Destroy(); }).Width(200);
+            })
+            .ToolBar(toolbar =>
+            {
+                toolbar.Create();
+                toolbar.Save();
+                toolbar.Search();
+            })
+            .Editable(editable => editable.Mode(GridEditMode.InCell))
+            .Navigatable()
+            .Sortable()
+            .Filterable()
+            .Scrollable(scr => scr.Height(500))
+            .Pageable(pageable => pageable
+            .Refresh(true)
+            .PageSizes(true)
+            .ButtonCount(5))
+            .DataSource(source => source
+            .Ajax()
+            .PageSize(40)
+            .Batch(true)
+            .ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(e => e.Year);
+            })
+            .Create(create => create.Url("Years?handler=Create").Data("forgeryToken"))
+            .Read(read => read.Url("Years?handler=Read").Data("forgeryToken"))
+            .Update(update => update.Url("Years?handler=Update").Data("forgeryToken"))
+            .Destroy(destroy => destroy.Url("Years?handler=Destroy").Data("forgeryToken"))
+            .Events(events => events.Error("error_handler"))
+            )
+        )
+    </div>
+</div>
+
+<script>
+    function RefreshGrid() {
+        $("#grid").data("kendoGrid").dataSource.read();
+    }
+
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:<br/>";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "<br/>";
+                    });
+                }
+            });
+            MessageBoxAlert(message);
+            RefreshGrid();
+        }
+    }
+
+    function forgeryToken() {
+        return kendo.antiForgeryTokens();
+    }
+</script>

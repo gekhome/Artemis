@@ -1,0 +1,135 @@
+﻿@using Artemis.ViewModels
+
+@{
+    ViewData["Title"] = "Demo page";
+    string culture = CultureInfo.CurrentCulture.Name;
+    string videoLink = "https://youtu.be/2OvvwWShNWo";
+}
+
+<style>
+    img.framed {
+        border: 1px solid #aaa;
+        border-radius: 8px;
+        padding: 0px;
+    }
+
+    img.framed:hover {
+        box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+    }
+</style>
+
+<div class="container">
+
+    <div style="display:flex; margin-right: 10px">
+        <div class="fw-semibold" style="margin-right: 5px; margin-top: 4px">Culture:</div>
+        <div style="width: 120px; margin-bottom: 30px ">
+            @(Html.Kendo().DropDownList()
+                .Name("culture")
+                .BindTo(new[] { "en-US", "en-GB", "el-GR", "de-DE" })
+                .Events(ev => ev.Change("cultureChange"))
+                .Value(culture)
+                )
+        </div>
+    </div>
+
+    <div class="placeholders mb-2">
+        <div class="row d-flex justify-content-start">
+            <div class="col-3 mb-3 placeholder">
+                <a href="~/images/Emily-Blunt-lg.jpg" target="_blank">
+                    <img class="img-fluid framed" alt="Emily Blunt" src="~/images/Emily-Blunt.jpg">
+                </a>
+            </div>
+            <div class="col-3">
+                <h2>Lorem ipsum dolor sit amet...</h2>
+                <p>
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                    Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a
+                    galley of type and scrambled it to make a type specimen book.
+                </p>
+                <p>
+                    <kendo-button name="primaryTextButton" theme-color="ThemeColor.Primary" on-click="onClick">
+                        Home Page
+                    </kendo-button>
+                </p>
+            </div>
+            <div class="col-3">
+                <h2>&nbsp;</h2>
+                <p>
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                    Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a
+                    galley of type and scrambled it to make a type specimen book.
+                </p>
+                <p>
+                    @(Html.Kendo().Button().Name("TextButton").Content("Button"))
+                </p>
+            </div>
+            <div class="col-3">
+                <div class="demo-section wide" style="max-width: 644px;">
+                    @(Html.Kendo().MediaPlayer()
+                        .AutoPlay(false)
+                        .Navigatable(true)
+                        .Media(m => m
+                        .Title("ProgressNEXT 2019 Highlights")
+                        .Source(videoLink)
+                        )
+                        .Name("mediaPlayer")
+                        .HtmlAttributes(new { style = "height:300px" })
+                    )
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            @(Html.Kendo().Grid<OrderViewModel>()
+                .Name("grid")
+                .Columns(columns =>
+                {
+                    columns.Bound(p => p.OrderID).Filterable(false);
+                    columns.Bound(p => p.Freight);
+                    columns.Bound(p => p.OrderDate).Format("{0:dd/MM/yyyy}");
+                    columns.Bound(p => p.ShipName);
+                    columns.Bound(p => p.ShipCity);
+                })
+                .Pageable()
+                .Sortable()
+                .Scrollable()
+                .Groupable()
+                .Filterable()
+                .Selectable()
+                .HtmlAttributes(new { style = "height:550px;" })
+                .DataSource(dataSource => dataSource
+                .Ajax()
+                .PageSize(20)
+                .Read(read => read.Action("Orders_Read", "Demo"))
+                )
+                )
+        </div>
+    </div>
+
+</div>
+
+
+<script type="text/javascript">
+    var href = window.location.href;
+    if (href.indexOf('culture') > -1) {
+        debugger;
+        $('#culture').val(href.replace(/(.*)culture=([^&]*)/, '$2'));
+    }
+
+    function cultureChange(e) {
+        var value = this.value();
+        if (href.indexOf('culture') > -1) {
+            href = href.replace(/culture=([^&]*)/, 'culture=' + value);
+        } else {
+            href += href.indexOf('?') > -1 ? '&culture=' + value : '?culture=' + value;
+        }
+        window.location.href = href;
+    }
+
+    function onClick(e) {
+        location.href = '@Url.Action("Index", "Home")';
+    }
+
+</script>

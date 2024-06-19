@@ -1,0 +1,185 @@
+﻿@page
+@model Artemis.Pages.Movies.FilmBrowserModel
+
+@{
+    ViewData["Title"] = "Film browser";
+}
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@Html.AntiForgeryToken()
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between">
+        <page-header add-title="Movies browser"></page-header>
+        <div class="d-inline-flex float-end">
+            <button class="gek-btn-success ms-2" onclick="RefreshView()">Refresh</button>
+            <a class="gek-btn-primary ms-2" asp-action="Index" asp-controller="Home">Home</a>
+        </div>
+    </div>
+    <hr />
+
+    @(Html.Kendo().DataSource<FilmInfoViewModel>()
+        .Name("dataSource")
+        .Ajax(dataSource => dataSource
+        .Model(model =>
+        {
+            model.Id(p => p.FilmId);
+        })
+        .Read(read => read.Action("FilmInfo_Read", "Films"))
+        .ServerOperation(false)
+        .PageSize(20)
+        )
+    )
+
+    <div class="row col-4 mx-1 my-2">
+        @(Html.Kendo().AutoComplete()
+            .Name("autoComplete")
+            .DataTextField("Title")
+            .Filter(FilterType.Contains)
+            .Placeholder("Select movie by title")
+            .MinLength(3)
+            .DataSource("dataSource")
+        )
+    </div>
+
+    <div class="row mb-2 shadow-sm p-2">
+        @(Html.Kendo().ListView<FilmInfoViewModel>()
+            .Name("listview")
+            .TagName("div")
+            .HtmlAttributes(new { style = "height:600px;margin:auto" })
+            .ClientTemplateId("film-template")
+            .Selectable(ListViewSelectionMode.Single)
+            .Events(e => e.Change("onChange"))
+            .Pageable(pageable => pageable
+            .Refresh(true)
+            .PageSizes(true)
+            .ButtonCount(10))
+            .Scrollable()
+            .DataSource("dataSource")
+        )
+    </div>
+
+    <div id="gallery-data" class="card shadow-sm mt-4 text-center" style="width:100%">
+        <h4>Selected movie trailer</h4>
+        @(Html.Kendo().MediaPlayer()
+            .Name("mediaPlayer")
+            .AutoPlay(false)
+            .Volume(20)
+            .ForwardSeek(true)
+            .FullScreen(false)
+            .Media(m => m
+            .Title("ProgressNEXT 2019 Highlights")
+            .Source("https://youtu.be/2OvvwWShNWo")
+            )
+            .HtmlAttributes(new { @class="video" })
+        )
+    </div>
+</div>
+
+<style>
+    #listView {
+        padding: 5px 5px;
+        margin: auto;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        min-height: 600px;
+        font: inherit;
+    }
+
+    .video {
+        margin: auto;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        width: 900px;
+        height: 600px;
+    }
+
+    .film {
+        float: left;
+        position: relative;
+        width: 405px;
+        height: 410px;
+        margin: 0 5px;
+        padding: 0;
+        background-color: whitesmoke;
+    }
+
+        .film:hover {
+            color: #fff;
+            background-color: rgba(0,0,0,0.60);
+            transition: background .2s linear, color .2s linear;
+            -moz-transition: background .2s linear, color .2s linear;
+            -webkit-transition: background .2s linear, color .2s linear;
+            -o-transition: background .2s linear, color .2s linear;
+        }
+
+        .film img {
+            width: 150px;
+            height: 225px;
+        }
+
+        .film p {
+            font-size: 0.8rem;
+            margin-bottom: 2px;
+        }
+
+    .k-state-selected {
+        color: #fff;
+        background-color: #006BA5;
+        background-image: none;
+    }
+
+</style>
+
+@section Scripts
+{
+    <script type="text/template" id="film-template">
+        <div class="card shadow-sm m-1 p-1 film">
+            <div class="d-inline-flex flex-row">
+                <img src="data:image/*;base64, #:PosterImage#" class="me-4 poster"/>
+                <div class="d-inline-flex flex-column mt-2">
+                    <h4>#: Title #</h4>
+                    <p><label class="fw-semibold">Release year:&nbsp;</label>#: ReleaseYear #</p>
+                    <p><label class="fw-semibold">Rating:&nbsp;</label>#: Rating #</p>
+                    <p><label class="fw-semibold">Running time:&nbsp;</label>#: RunningTime #</p>
+                    <p><label class="fw-semibold">Language:&nbsp;</label>#: Language #</p>
+                    <p><label class="fw-semibold">Director:&nbsp;</label>#: Director #</p>
+                    <p><label class="fw-semibold">Budget:&nbsp;</label>#: Budget #</p>
+                    <p><label class="fw-semibold">Box office:&nbsp;</label>#: BoxOffice #</p>
+                </div>
+            </div>
+            <div>
+                <p class="mx-2" style="margin-top:2px;"><label class="fw-semibold mb-1">Plot summary:</label></p>
+                <p class="long-text mx-2" style="width:380px;height:160px;">#: PlotSummary #</p>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/javascript">
+
+        function forgeryToken() {
+            return kendo.antiForgeryTokens();
+        }
+
+        function RefreshView() {
+            var listview = $("#listview").data("kendoListView");
+            listview.dataSource.read();
+        }
+
+        function onChange() {
+            var index = this.select().index();
+            var dataItem = this.dataSource.view()[index];
+            if (dataItem) {
+                // Play the video that was selected from the playlist.
+                var mediaPlayer = $("#mediaPlayer").data("kendoMediaPlayer");
+
+                mediaPlayer.media({
+                    title: dataItem.Title,
+                    source: dataItem.TrailerLink
+                }).forwardSeek(true);
+            }
+        }
+
+    </script>
+
+}

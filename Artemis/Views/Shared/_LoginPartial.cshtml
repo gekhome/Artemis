@@ -1,0 +1,50 @@
+﻿@using Artemis.Data
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+
+@{
+    string? displayName = "Not signed in";
+    if (SignInManager.IsSignedIn(User))
+    {
+        displayName = User.FindFirst("FullName")?.Value ?? User.Identity?.Name;
+    }
+}
+
+
+<ul class="navbar-nav d-sm-inline-flex">
+@if (SignInManager.IsSignedIn(User))
+{
+    <li class="nav-item">
+        <span class="flex-row me-2 d-inline-flex">
+            @if (UserManager.GetUserAsync(User)?.Result?.ProfilePicture != null)
+            {
+                <img class="d-inline-block rounded-circle user-picture" 
+                    src="data:image/*;base64,@(Convert.ToBase64String(UserManager.GetUserAsync(User).Result?.ProfilePicture!))">
+            }
+            else
+            {
+                <img src="~/images/user.png" class="d-inline-block rounded-circle user-picture" />
+            }
+            <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage your account">@displayName</a>
+        </span>
+    </li>
+    <li class="nav-item">
+        <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            <button  type="submit" class="nav-link btn-sm btn-danger p-1 mt-1 text-light">Logout</button>
+        </form>
+    </li>
+}
+else
+{
+    <li class="nav-item me-2">
+        <a class="nav-link btn-sm btn-info p-1 text-light" asp-area="Identity" asp-page="/Account/Login">Login</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link btn-sm btn-primary p-1 text-light" asp-area="Identity" asp-page="/Account/Register">Sign up</a>
+    </li>
+}
+</ul>

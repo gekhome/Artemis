@@ -1,0 +1,55 @@
+﻿@model MusicStudio
+
+@{
+    Layout = null;
+}
+
+<div class="modal fade" id="modal-partial" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Music Studio Edit</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <form method="post" asp-action="MusicStudioEdit" asp-controller="Setup" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <div class="modal-body form-horizontal">
+                    @Html.HiddenFor(model => model.StudioId)
+                    <div class="form-group">
+                        <label asp-for="Name" style="width: 100%;" class="col-md-2 form-label"></label>
+                        <input type="text" asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Description" style="width: 100%;" class="col-md-2 form-label"></label>
+                        <textarea asp-for="Description" rows="10" cols="100"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-2">
+                        <label asp-for="LogoBytes" style="width: 100%;" class="col-md-2 form-label">Logo</label>
+                        @if (Model?.LogoBytes != null)
+                        {
+                            <img id="logoPicture" style="width:100px;height:100px; object-fit:cover; border: 1px solid dimgray; border-radius: 4px"
+                                 src="data:image/*;base64,@(Convert.ToBase64String(Model.LogoBytes))">
+                        }
+                        else
+                        {
+                            <img id="logoPicture" style="width:100px;height:100px; object-fit:cover; border: 1px solid dimgray; border-radius:4px" src="">
+                        }
+                        <input type="file" accept=".png,.jpg,.jpeg,.gif,.tif,.tiff" asp-for="LogoBytes"
+                               style="border:0px!important;padding: 0px;padding-top: 10px;padding-bottom: 30px;"
+                               onchange="document.getElementById('logoPicture').src = window.URL.createObjectURL(this.files[0])" />
+                        <span asp-validation-for="LogoBytes" class="text-danger"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

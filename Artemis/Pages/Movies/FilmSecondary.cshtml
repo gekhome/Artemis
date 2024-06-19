@@ -1,0 +1,50 @@
+﻿@page
+@model Artemis.Pages.Movies.FilmSecondaryModel
+
+@{
+    Layout = "_LayoutMin";
+    ViewData["Title"] = "Additional film data";
+    int filmId = Model.Film.FilmId;
+    string header = Model.Film.Title + " " + Model.Film.ReleaseYear.ToString();
+}
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@Html.AntiForgeryToken()
+
+<partial name="_Message" for="StatusMessage" />
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between">
+        <page-header add-title="Additional film data"></page-header>
+        <div class="d-inline-flex float-end">
+            <button class="gek-btn-danger" onclick="javascript:window.close();opener.window.focus();">Close</button>
+        </div>
+    </div>
+    <hr />
+    <h4 class="gek-header text-center">@header</h4>
+
+    <div class="d-flex flex-row mt-3">
+        <div class="col-6 card shadow-sm text-center">
+            <h5 class="mb-1">Production countries</h5>
+            <partial name="_FilmCountry" />
+        </div>
+        <div class="col-6 card shadow-sm text-center">
+            <h5 class="mb-1">Production companies</h5>
+            <partial name="_FilmCompany" />
+        </div>
+    </div>
+    <div class="col-12 text-center card shadow-sm mt-4">
+        <h5 class="py-2">Top cast</h5>
+        <partial name="_FilmActor" />
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function forgeryToken() {
+        var filmID = @filmId;
+        // with this we can send more than one parameters
+        return $.extend(true, {}, kendo.antiForgeryTokens(), { filmId: filmID });
+    }
+
+</script>
