@@ -1,0 +1,149 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Actor Image Gallery";
+}
+
+<style>
+    .view {
+        height: 600px;
+        width: 800px;
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 0.6rem;
+        margin-bottom: 0.6rem;
+        border-radius: 10px;
+    }
+
+    .photo {
+        display: inline-block;
+        object-fit: cover;
+        padding: 0;
+        width: inherit;
+        height: inherit;
+    }
+</style>
+
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between">
+        <page-header add-title="Actor image gallery"></page-header>
+        <div class="d-inline-flex float-end">
+            <button class="gek-btn-success ms-2" onclick="RefreshGrid()">Refresh</button>
+            <a class="gek-btn-primary ms-2" asp-action="Index" asp-controller="Home">Home</a>
+        </div>
+    </div>
+    <hr />
+
+    <div class="mb-2">
+        @(Html.Kendo().Grid<ActorInfoViewModel>()
+            .Name("grid")
+            .HtmlAttributes(new { style = "font-size:14px;" })
+            .Columns(columns =>
+            {
+                columns.Bound(m => m.PhotoImage).ClientTemplate(
+                @"<div class='text-center'><img class='person-photo' " + "src=\"data:image/*;base64, #:PhotoImage#\" /></div>")
+                .Width(80).Media("(min-width: 100px)").Filterable(false).Groupable(false);
+                columns.Bound(m => m.FullName).Width(300).Media("(min-width: 300px)").Groupable(false);
+                columns.Bound(m => m.Country).Width(300).Media("(min-width: 300px)");
+                columns.Bound(m => m.Dob).Width(200).Media("(min-width: 300px)").Groupable(false);
+                columns.Bound(m => m.Age).Width(200).Media("(min-width: 200px)").Groupable(false);
+                columns.Bound(m => m.Height).Width(200).Media("(min-width: 200px)").Groupable(false);
+                columns.Bound(m => m.Occupations).Width(300).Media("(min-width: 300px)").Groupable(false);
+                columns.Bound(m => m.Rating).Width(200).Media("(min-width: 200px)");
+            })
+            .ToolBar(toolbar =>
+            {
+                toolbar.Search();
+            })
+            .Sortable()
+            .Filterable()
+            .Groupable()
+            .Selectable()
+            .Scrollable(scr => scr.Height(400))
+            .ColumnMenu()
+            .Pageable(pageable => pageable
+            .Refresh(true)
+            .PageSizes(true)
+            .ButtonCount(5))
+            .DataSource(source => source
+            .Ajax()
+            .PageSize(60)
+            .ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(m => m.ActorId);
+            })
+            .Read(read => read.Action("ActorInfo_Read", "Actors"))
+            )
+        )
+    </div>
+
+    <!-- Child scrollview (supports CRUD operations) -->
+    <div id="gallery-data" class="card shadow" style="width:100%">
+        @(Html.Kendo().ScrollView()
+            .Name("gallery")
+            .AutoBind(true)
+            .EnablePager(false)
+            .ContentHeight("100%")
+            .TemplateId("gallery-template")
+            .EmptyTemplateId("empty-template")
+            .DataSource(dataSource => dataSource
+            .Custom()
+            .Type("aspnetmvc-ajax")
+            .Transport(transport => transport
+            .Read(read => read.Action("Images_Read", "Actors").Data("data"))
+            )
+            .Schema(s => s.Data("Data").Total("Total"))
+            .ServerPaging(true)
+            .PageSize(1)
+            )
+            .HtmlAttributes(new { @class = "view" })
+        )
+    </div>
+</div>
+
+@section Scripts
+{
+    <script id="gallery-template" type="text/template">
+        <div>
+            <img src="data:image/*;base64, #: data.GalleryImage #" class="photo" />
+        </div>
+    </script>
+
+    <script id="empty-template" type="text/template">
+        <div>
+            <img class="photo" src="/images/no-image-available.png" style="width:800px; height:600px;" />
+        </div>
+    </script>
+
+    <script type="text/javascript">
+
+        function change(e) {
+            var dataItem = this.dataItem(this.select());
+            var scrollview = $("#gallery").data("kendoScrollView");
+            if (dataItem) {
+                 var actorID = parseInt(dataItem.ActorId);
+                scrollview.dataSource.read({ actorId: actorID });
+                scrollview.scrollTo(0, true);
+                scrollview.refresh();
+            }
+            else {
+                scrollview.scrollTo(0, true);
+                scrollview.refresh();
+            }
+        }
+
+        function data(data, type) {
+            var masterGrid = $("#grid").data("kendoGrid");
+            var dataItem = masterGrid.dataItem(masterGrid.select());
+            if (dataItem) {
+                return { actorId: dataItem.ActorId };
+            }
+            return { actorId: 0 };
+        }
+
+    </script>
+}

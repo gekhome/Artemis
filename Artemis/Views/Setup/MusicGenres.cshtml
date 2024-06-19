@@ -1,0 +1,85 @@
+﻿
+@{
+    ViewData["Title"] = "Music Genres";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between">
+        <page-header add-title="Music genres setup"></page-header>
+        <div class="d-inline-flex float-end">
+            <button class="gek-btn-success" onclick="RefreshGrid()">Refresh</button>
+            <a class="gek-btn-primary ms-2" asp-action="Index" asp-controller="Home">Home</a>
+        </div>
+    </div>
+    <hr />
+
+    <div class="mb-2">
+        @(Html.Kendo().Grid<MusicGenre>()
+            .Name("grid")
+            .HtmlAttributes(new { style = "height:600px;" })
+            .Columns(columns =>
+            {
+                columns.Bound(m => m.GenreName).Width(300);
+                columns.Command(command => command.Destroy()).Width(240);
+            })
+            .ToolBar(toolbar =>
+            {
+                toolbar.Create();
+                toolbar.Save();
+                toolbar.Excel();
+                toolbar.Search();
+            })
+            .Editable(editable => editable.Mode(GridEditMode.InCell))
+            .Navigatable()
+            .Filterable()
+            .Pageable(pageable => pageable
+            .Refresh(true)
+            .PageSizes(true)
+            .ButtonCount(5))
+            .Sortable()
+            .Scrollable()
+            .DataSource(dataSource => dataSource
+            .Ajax()
+            .Batch(true)
+            .ServerOperation(false)
+            .PageSize(40)
+            .Model(model =>
+            {
+                model.Id(m => m.GenreId);
+            })
+            .Create(update => update.Action("MusicGenre_Create", "Setup"))
+            .Read(read => read.Action("MusicGenre_Read", "Setup"))
+            .Update(update => update.Action("MusicGenre_Update", "Setup"))
+            .Destroy(update => update.Action("MusicGenre_Destroy", "Setup"))
+            .Events(events => events.Error("error_handler"))
+            )
+            )
+    </div>
+</div>
+
+@section Scripts
+    {
+    <script type="text/javascript">
+
+        function RefreshGrid() {
+            $("#grid").data("kendoGrid").dataSource.read();
+        }
+
+        function error_handler(e) {
+            if (e.errors) {
+                var message = "Errors:<br/>";
+                $.each(e.errors, function (key, value) {
+                    if ('errors' in value) {
+                        $.each(value.errors, function () {
+                            message += this + "<br/>";
+                        });
+                    }
+                });
+                MessageBoxAlert(message);
+                RefreshGrid();
+            }
+        }
+
+    </script>
+}
+

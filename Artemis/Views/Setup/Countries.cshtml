@@ -1,0 +1,111 @@
+﻿@model CountryViewModel
+
+@{
+    ViewData["Title"] = "Countries";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between">
+        <page-header add-title="Countries setup"></page-header>
+        <div class="d-flex float-end me-2"><a class="gek-btn-primary" asp-action="Index" asp-controller="Home">Home</a></div>
+    </div>
+    <hr />
+
+    <div class="mb-2">
+        @(Html.Kendo().Grid<CountryViewModel>()
+            .Name("grid")
+            .HtmlAttributes(new { style = "height:600px;" })
+            .Columns(columns =>
+            {
+                columns.Bound(m => m.FlagImage).ClientTemplate(
+                @"<div class='text-center'><img class='grid-photo' " + "src=\"data:image/*;base64, #:FlagImage#\" /></div>")
+                .Filterable(false).Title("Flag").Width(60);
+                columns.Bound(m => m.Name).Width(200);
+                columns.Bound(m => m.Capital).Width(200);
+                columns.Bound(m => m.Population).Width(180);
+                columns.ForeignKey(m => m.Region, (IEnumerable<Regions>)ViewData["regions"]!, "RegionId", "RegionText").Width(200).Media("(min-width: 200px)");
+                columns.Command(command => { command.Edit(); command.Destroy(); command.Custom("\uD83D\uDD89" + " Form").Click("RowEdit"); }).Width(300);
+            })
+            .ToolBar(toolbar =>
+            {
+                toolbar.Create();
+                toolbar.Excel();
+                toolbar.Search();
+            })
+            .Editable(editable => editable.Mode(GridEditMode.InLine))
+            .Filterable()
+            .Pageable(pageable => pageable
+            .Refresh(true)
+            .PageSizes(true)
+            .ButtonCount(5))
+            .Sortable()
+            .Scrollable()
+            .DataSource(dataSource => dataSource
+            .Ajax()
+            .ServerOperation(false)
+            .PageSize(60)
+            .Model(model =>
+            {
+                model.Id(m => m.CountryId);
+                model.Field(m => m.FlagImage).Editable(false);
+                model.Field(m => m.Region).DefaultValue((int)ViewData["defaultRegion"]!);
+            })
+            .Create(update => update.Action("Countries_Create", "Setup"))
+            .Read(read => read.Action("Countries_Read", "Setup"))
+            .Update(update => update.Action("Countries_Update", "Setup"))
+            .Destroy(update => update.Action("Countries_Destroy", "Setup"))
+            .Events(events => events.Error("error_handler"))
+            )
+        )
+    </div>
+</div>
+
+<div id="partialDiv">
+    <partial name="CountryEditPartial" />
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        function RefreshGrid() {
+            $("#grid").data("kendoGrid").dataSource.read();
+        }
+
+        function error_handler(e) {
+            if (e.errors) {
+                var message = "Errors:<br/>";
+                $.each(e.errors, function (key, value) {
+                    if ('errors' in value) {
+                        $.each(value.errors, function () {
+                            message += this + "<br/>";
+                        });
+                    }
+                });
+                MessageBoxAlert(message);
+                RefreshGrid();
+            }
+        }
+
+        function RowEdit(e) {
+            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+            var CountryID = dataItem.CountryId;
+
+            // Handle data source of partial view
+            $.ajax({
+                url: '@Url.Action("GetCountryRecord", "Setup")?Id=' + CountryID,
+                type: 'GET',
+                data: "",
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    $("#partialDiv").html(data);
+                    $("#modal-partial").modal('show');
+                },
+                error: function () {
+                    MessageBoxAlert("There was a problem acquiring data.", "Error");
+                }
+            });                 
+        }
+
+    </script>
+}

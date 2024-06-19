@@ -1,0 +1,14 @@
+F:\VS-2022\repos\Artemis\Artemis.Dal\bin\Release\net7.0\Artemis.Dal.deps.json
+F:\VS-2022\repos\Artemis\Artemis.Dal\bin\Release\net7.0\Artemis.Dal.runtimeconfig.json
+F:\VS-2022\repos\Artemis\Artemis.Dal\bin\Release\net7.0\Artemis.Dal.dll
+F:\VS-2022\repos\Artemis\Artemis.Dal\bin\Release\net7.0\Artemis.Dal.pdb
+F:\VS-2022\repos\Artemis\Artemis.Dal\obj\Release\net7.0\Artemis.Dal.csproj.AssemblyReference.cache
+F:\VS-2022\repos\Artemis\Artemis.Dal\obj\Release\net7.0\Artemis.Dal.GeneratedMSBuildEditorConfig.editorconfig
+F:\VS-2022\repos\Artemis\Artemis.Dal\obj\Release\net7.0\Artemis.Dal.AssemblyInfoInputs.cache
+F:\VS-2022\repos\Artemis\Artemis.Dal\obj\Release\net7.0\Artemis.Dal.AssemblyInfo.cs
+F:\VS-2022\repos\Artemis\Artemis.Dal\obj\Release\net7.0\Artemis.Dal.csproj.CoreCompileInputs.cache
+F:\VS-2022\repos\Artemis\Artemis.Dal\obj\Release\net7.0\Artemis.Dal.dll
+F:\VS-2022\repos\Artemis\Artemis.Dal\obj\Release\net7.0\refint\Artemis.Dal.dll
+F:\VS-2022\repos\Artemis\Artemis.Dal\obj\Release\net7.0\Artemis.Dal.pdb
+F:\VS-2022\repos\Artemis\Artemis.Dal\obj\Release\net7.0\Artemis.Dal.genruntimeconfig.cache
+F:\VS-2022\repos\Artemis\Artemis.Dal\obj\Release\net7.0\ref\Artemis.Dal.dll

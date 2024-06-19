@@ -1,0 +1,83 @@
+﻿<!-- 
+------------------------------------------
+    Artemis Application main layout page
+------------------------------------------
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Artemis</title>
+
+    <!-- Telerik Core Content Start -->
+    <link href="https://cdn.kendostatic.com/2022.1.119/styles/kendo.common-bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.kendostatic.com/2022.1.119/styles/kendo.bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.kendostatic.com/2022.1.119/js/jquery.min.js"></script>
+    <script src="https://cdn.kendostatic.com/2022.1.119/js/jszip.min.js"></script>
+    <script src="https://cdn.kendostatic.com/2022.1.119/js/kendo.all.min.js"></script>
+    <script src="https://cdn.kendostatic.com/2022.1.119/js/kendo.aspnetmvc.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2022.1.119/js/cultures/kendo.culture.en-GB.min.js"></script>
+    <!-- Telerik Core Content End -->
+
+    <!-- Font Awesome Libraries and Popper tooltips -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/fontawesome.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/solid.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/fontawesome.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/solid.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+
+    <environment names="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/js/messagebox/messagebox.css" asp-append-version="true" />
+
+        <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/messagebox/messagebox.js" asp-append-version="true"></script>
+        <script src="~/js/custom.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/js/messagebox/messagebox.css" asp-append-version="true" />
+
+        <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/messagebox/messagebox.js" asp-append-version="true"></script>
+        <script src="~/js/custom.js"></script>
+    </environment>
+
+	<!-- Required to display the favicon.ico -->
+	<link rel="icon" type="image/x-icon" href="~/favicon.ico" asp-append-version="true">
+
+    @{
+        var culture = CultureInfo.CurrentCulture.ToString();
+        var path = Url.Content("~/lib/kendo-ui/js/messages/kendo.messages." + culture + ".min.js");
+    }
+    <script src="@path"></script>
+
+    <script type="text/javascript">
+        //set the Kendo UI culture
+        kendo.culture("@culture");
+    </script>
+</head>
+
+<body id="body"> 
+    <partial name="_Navbar" />
+    <partial name="_Sidebar" />
+    <partial name="_Alert" />
+
+    <!-- this div makes the page dark simulating modal effect -->
+    <div id="backdrop" onclick="sidebarClose()"></div>
+
+    <div class="container-fluid" id="main">
+        <main role="main" class="pb-3" >
+            @RenderBody()
+        </main>
+    </div>
+
+    @RenderSection("Footer", required: false);
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

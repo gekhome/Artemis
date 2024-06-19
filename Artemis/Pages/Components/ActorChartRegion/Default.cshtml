@@ -1,0 +1,49 @@
+﻿@model IEnumerable<ActorRegionViewModel>
+
+@{
+    string width = ViewBag.Width + "px";
+    string height = ViewBag.Height + "px";
+}
+
+<style>
+    .chart {
+        margin: auto;
+        min-width: @width;
+        min-height: @height;
+        box-shadow: 2px 2px 1px 1px #e6e6e6;
+        border-radius: 0.3rem;
+        background-color: whitesmoke;
+    }
+
+    .chart-area {
+        margin: auto;
+        min-width: @width;
+        min-height: @height;
+    }
+</style>
+
+<div class="my-2 chart">
+    @(Html.Kendo().Chart(Model)
+        .Name("chartRegion")
+        .Title(title => title
+        .Text("Distribution of actors by region")
+        .Position(ChartTitlePosition.Bottom))
+        .Legend(legend => legend
+        .Visible(false))
+        .ChartArea(chart => chart
+        .Background("transparent"))
+        .HtmlAttributes(new { @class = "chart-area" })
+        .Series(series =>
+        {
+            series.Pie(model => model.Percentage, model => model.Region)
+            .ExplodeField("Explode")
+            .ColorField("Color")
+            .Labels(labels => labels
+            .Template("#= category #: \n #= value #%")
+            .Background("transparent")
+            .Visible(true))
+            .StartAngle(180);
+        })
+        .Tooltip(tooltip => tooltip.Visible(true).Format("{0}%"))
+    )
+</div>

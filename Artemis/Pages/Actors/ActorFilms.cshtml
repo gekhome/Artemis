@@ -1,0 +1,100 @@
+﻿@page
+@model Artemis.Pages.Actors.ActorFilmsModel
+
+@{
+    ViewData["Title"] = "Actors & Films";
+}
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@Html.AntiForgeryToken()
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between">
+        <page-header add-title="Actors and filmographies"></page-header>
+        <div class="d-inline-flex float-end">
+            <button class="gek-btn-success ms-2" onclick="RefreshGrid()">Refresh</button>
+            <a class="gek-btn-primary ms-2" asp-action="Index" asp-controller="Home">Home</a>
+        </div>
+    </div>
+    <hr />
+
+    <div class="row mb-2">
+        @(Html.Kendo().Grid<ActorInfoViewModel>()
+            .Name("grid")
+            .Columns(columns =>
+            {
+                columns.Bound(m => m.PhotoImage).ClientTemplate(
+                @"<div class='text-center'><img class='person-photo' " + "src=\"data:image/*;base64, #:PhotoImage#\" /></div>")
+                .Filterable(false).Width(80).Media("(min-width: 100px)");
+                columns.Bound(m => m.FullName).Width(300).Media("(min-width: 300px)");
+                columns.Bound(m => m.Country).Width(160).Media("(min-width: 160px)");
+                columns.Bound(m => m.Age).Width(100).Media("(min-width: 100px)");
+                columns.Bound(m => m.Height).Width(100).Media("(min-width: 100px)");
+                columns.Bound(m => m.Rating).Width(120).Media("(min-width: 120px)");
+                columns.Bound(m => m.Occupations).Width(300).Media("(min-width: 350px)");
+            })
+            .ToolBar(toolbar =>
+            {
+                toolbar.Search();
+            })
+            .Sortable()
+            .Filterable()
+            .Scrollable(scr => scr.Height(500))
+            .Pageable(pageable => pageable
+            .Refresh(true)
+            .PageSizes(true)
+            .ButtonCount(5))
+            .DataSource(source => source
+            .Ajax()
+            .PageSize(60)
+            .ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(m => m.ActorId);
+            })
+            .Read(read => read.Url("/Actors/ActorFilms?handler=Actors_Read").Data("forgeryToken"))
+            )
+            .ClientDetailTemplateId("detail-template")
+        )
+    </div>
+
+</div>
+
+@section Scripts
+{
+    <script id="detail-template" type="text/template">
+        @(Html.Kendo().Grid<ActorFilmViewModel>()
+            .Name("grid_#=ActorId#")
+            .HtmlAttributes(new { style = "font-size:15px" })
+            .Columns(columns =>
+            {
+                columns.Bound(m => m.Year).Width(100);
+                columns.Bound(m => m.Title).Width(300);
+                columns.Bound(m => m.Role).Width(200);
+            })
+            .DataSource(ds => ds
+            .Ajax()
+            .PageSize(10)
+            .Model(model =>
+            {
+                model.Id(m => m.Id);
+            })
+            .Read(read => read.Url("/Actors/ActorFilms?handler=ActorFilms_Read&actorId=#=ActorId#").Data("forgeryToken")))
+            .Pageable(p => p
+            .Refresh(true)
+            .PageSizes(true)
+            .ButtonCount(5))
+            .Filterable()
+            .Sortable()
+            .ToClientTemplate()
+        )
+    </script>
+
+    <script type="text/javascript">
+
+        function forgeryToken() {
+            return kendo.antiForgeryTokens();
+        }
+
+    </script>
+}

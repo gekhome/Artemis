@@ -1,0 +1,16 @@
+﻿@{
+    string author = "Georgios Kyriakakis";
+}
+
+<footer class="container footer border-top text-center" id="footer">
+    <p>
+        &copy; @DateTime.Now.Year Artemis - &lt;<system-info add-machine add-os add-processors />&gt;
+    </p>
+    <div>
+        <img class="d-inline-block me-4" src="~/images/orion.png" width="38px" asp-append-version=true />
+        <label class="fs-6 fw-semibold me-2">Developed by @author</label>
+        <a class="fw-semibold" href="mailto:gekhome@hotmail.com" data-bs-toggle="tooltip"  data-bs-placement="right" title="Send email to author">
+            gekhome@hotmail.com
+        </a>
+    </div>
+</footer>

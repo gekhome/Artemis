@@ -1,0 +1,166 @@
+﻿@{
+    ViewData["Title"] = "Claims List";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between">
+        <page-header add-title="Claims management page"></page-header>
+        <div class="d-flex float-end me-2"><a class="btn btn-secondary" asp-action="Index" asp-controller="Home">Home page</a></div>
+    </div>
+    <hr />
+
+    <div class="mb-2">
+        @(Html.Kendo().Grid<AppUserViewModel>()
+            .Name("master")
+            .HtmlAttributes(new { style = "height:500px;" })
+            .Columns(columns =>
+            {
+                columns.Bound(m => m.Id).Hidden();
+                columns.Bound(m => m.UserName).Width(180);
+                columns.Bound(m => m.FirstName).Width(100);
+                columns.Bound(m => m.LastName).Width(100);
+                columns.Bound(m => m.Email).Width(180);
+                columns.Bound(m => m.BirthDate).Width(100);
+                columns.Bound(m => m.Country).Width(150);
+                columns.Command(command => { command.Edit(); command.Destroy(); }).Width(200);
+            })
+            .ToolBar(toolbar =>
+            {
+                toolbar.Create();
+                toolbar.Excel();
+                toolbar.Search();
+            })
+            .Editable(editable => editable.Mode(GridEditMode.PopUp).Window(w => w.Width(600).Height(500).Title("Edit User")).TemplateName("FormUserEdit"))
+            .Filterable()
+            .Pageable(pageable => pageable
+            .Refresh(true)
+            .PageSizes(true)
+            .ButtonCount(5))
+            .Sortable()
+            .Scrollable()
+            .Selectable()
+            .DataSource(dataSource => dataSource
+            .Ajax()
+            .PageSize(20)
+            .Model(model =>
+            {
+                model.Id(m => m.Id);
+                model.Field(m => m.Id).Editable(false);
+            })
+            .Create(update => update.Action("User_Create", "Users"))
+            .Read(read => read.Action("User_Read", "Users"))
+            .Update(update => update.Action("User_Update", "Users"))
+            .Destroy(update => update.Action("User_Destroy", "Users"))
+            .Events(events => events.Error("error_handler1"))
+            )
+            .Events(events => events.Change("change"))
+        )
+    </div>
+    <div class="mb-2">
+        @(Html.Kendo().Grid<UserClaimViewModel>()
+            .Name("child")
+            .HtmlAttributes(new { style = "height:300px;" })
+            .Columns(columns =>
+            {
+                columns.Bound(m => m.Id).Hidden();
+                columns.Bound(m => m.ClaimType).Width(200).Title("Claim Type");
+                columns.Bound(m => m.ClaimValue).Width(200).Title("Claim Value");
+                columns.Command(command => { command.Edit(); command.Destroy(); }).Width(200);
+            })
+            .ToolBar(toolbar =>
+            {
+                toolbar.Create();
+                toolbar.Excel();
+                toolbar.Search();
+            })
+            .Editable(editable => editable.Mode(GridEditMode.InLine))
+            .Filterable()
+            .Pageable(pageable => pageable
+            .Refresh(true)
+            .PageSizes(true)
+            .ButtonCount(5))
+            .Sortable()
+            .Scrollable()
+            .Selectable()
+            .DataSource(dataSource => dataSource
+            .Ajax()
+            .PageSize(20)
+            .Model(model =>
+            {
+                model.Id(m => m.Id);
+                model.Field(m => m.Id).Editable(false);
+            })
+            .Create(update => update.Action("Claims_Create", "Claims").Data("data"))
+            .Read(read => read.Action("Claims_Read", "Claims").Data("data"))
+            .Update(update => update.Action("Claims_Update", "Claims").Data("data"))
+            .Destroy(update => update.Action("Claims_Destroy", "Claims"))
+            .Events(events => events.Error("error_handler2"))
+            )
+        )
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    function error_handler1(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "<br/>";
+                    });
+                }
+            });
+            MessageBoxAlert(message);
+            RefreshMaster();
+        }
+    }
+
+    function error_handler2(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "<br/>";
+                    });
+                }
+            });
+            MessageBoxAlert(message);
+            RefreshChild();
+        }
+    }
+
+    function change(e) {
+        var dataItem = this.dataItem(this.select());
+        var userID = dataItem.Id;
+        $("#child").data("kendoGrid").dataSource.read({ userId: userID });
+    }
+
+    function data() {
+        var masterGrid = $("#master").data("kendoGrid");
+        var dataItem = masterGrid.dataItem(masterGrid.select());
+        if (dataItem) {
+            return { userId: dataItem.Id };
+        }
+        else {
+            return "";
+        }
+    }
+
+    function RefreshMaster() {
+        $("#master").data("kendoGrid").dataSource.read();
+    }
+
+    function RefreshChild() {
+        var masterGrid = $("#master").data("kendoGrid");
+        var dataItem = masterGrid.dataItem(masterGrid.select());
+        if (dataItem) {
+            var userID = dataItem.Id;
+            $("#child").data("kendoGrid").dataSource.read({ userId: userID });
+        }
+    }
+
+</script>

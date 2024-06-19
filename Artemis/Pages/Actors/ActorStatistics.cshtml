@@ -1,0 +1,64 @@
+﻿@page
+@model Artemis.Pages.Actors.ActorStatisticsModel
+
+@{
+    ViewData["Title"] = "Actor statistics";
+}
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@Html.AntiForgeryToken()
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between">
+        <page-header add-title="Actor statistics"></page-header>
+        <div class="d-inline-flex float-end">
+            <button class="gek-btn-success ms-2" onclick="RefreshGrid()">Refresh</button>
+            <a class="gek-btn-primary ms-2" asp-action="Index" asp-controller="Home">Home</a>
+        </div>
+    </div>
+    <hr />
+
+    <div class="row mt-4">
+        <div class="col-6 card shadow-sm text-center">
+            <h5>Actors by Region Data</h5>
+            <partial name="_ActorRegions" />
+        </div>
+        <div class="col-6 card shadow-sm text-center">
+            <vc:actor-chart-region width="600" height="500" />
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-6 card shadow-sm text-center">
+            <h5>Actors by Rating Data</h5>
+            <partial name="_ActorRatings" />
+        </div>
+        <div class="col-6 card shadow-sm text-center">
+            <vc:actor-chart-rating width="600" height="500" />
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-6 card shadow-sm text-center">
+            <h5>Actors by Gender Data</h5>
+            <partial name="_ActorGenders" />
+        </div>
+        <div class="col-6 card shadow-sm text-center">
+            <vc:actor-chart-gender width="600" height="400" />
+        </div>
+    </div>
+
+</div>
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        function forgeryToken() {
+            return kendo.antiForgeryTokens();
+        }
+
+    </script>
+}
+

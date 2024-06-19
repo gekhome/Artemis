@@ -1,0 +1,46 @@
+﻿@{
+    ViewData["Title"] = "About Artemis";
+}
+
+@section Footer
+{
+    <partial name="_Footer" />
+}
+
+
+<div class="container text-center">
+    <section class="jumbotron">
+        <h1>@ViewBag.Title</h1>
+        <p class="lead">@ViewBag.Message</p>
+    </section>
+
+    <div class="card shadow-sm mt-4 p-4">
+        <p class="fs-5 text-muted" style="text-align:left">
+            This application provides access to the most popular movies and music video clips. Additional information about
+            the actors and music artists is also available. Information about the movies, songs and related actors/artists
+            is drawn from various sources in the Internet (Wikipedia, IMDb, etc.)
+        </p>
+        <p class="fs-5 text-muted mt-2" style="text-align:left">
+            The application demonstrates all the basic features available in the ASP.NET Core (.NET 7). For more information
+            about developing in this platform, please contact the author of the application.
+        </p>
+    </div>
+
+    <div class="pt-4 pb-1">
+        <h5>Demo of Popper library tooltips</h5>
+    </div>
+    <div class="mt-4 d-inline-flex flex-row">
+        <button type="button" class="btn btn-primary me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top">
+            Tooltip on top
+        </button>
+        <button type="button" class="btn btn-success me-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Tooltip on bottom">
+            Tooltip on bottom
+        </button>
+        <button type="button" class="btn btn-dark me-2" data-bs-toggle="tooltip" data-bs-html="true" title="<em>Tooltip</em> <u>with</u> <b>HTML</b>">
+            Tooltip with HTML
+        </button>
+        <button type="button" class="btn btn-info" data-bs-toggle="tooltip" data-bs-placement="right" title="Tooltip on right">
+            Tooltip on right
+        </button>
+    </div>
+</div>

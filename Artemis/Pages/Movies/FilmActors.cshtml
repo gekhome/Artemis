@@ -1,0 +1,147 @@
+﻿@page
+@model Artemis.Pages.Movies.FilmActorsModel
+
+@{
+    ViewData["Title"] = "Films & actors";
+}
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@Html.AntiForgeryToken()
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between">
+        <page-header add-title="Films and actors"></page-header>
+        <div class="d-inline-flex float-end">
+            <button class="gek-btn-success ms-2" onclick="RefreshGrid()">Refresh</button>
+            <a class="gek-btn-primary ms-2" asp-action="Index" asp-controller="Home">Home</a>
+        </div>
+    </div>
+    <hr />
+
+    <div class="mb-2">
+        @(Html.Kendo().Grid<FilmInfoViewModel>()
+            .Name("grid")
+            .Columns(columns =>
+            {
+                columns.Bound(m => m.PosterImage).ClientTemplate(
+                @"<div class='text-center'><img class='grid-photo' " + "src=\"data:image/*;base64, #:PosterImage#\" /></div>")
+                .Filterable(false).Width(80).Media("(min-width: 100px)");
+                columns.Bound(m => m.Title).Width(400).Media("(min-width: 400px)");
+                columns.Bound(m => m.ReleaseYear).Width(120).Media("(min-width: 300px)");
+                columns.Bound(m => m.RunningTime).Width(150).Title("Run.time (min)").Media("(min-width: 300px)");
+                columns.Bound(m => m.Rating).Width(120).Media("(min-width: 200px)");
+                columns.Bound(m => m.Genres).Width(350).Media("(min-width: 350px)");
+            })
+            .ToolBar(toolbar =>
+            {
+                toolbar.Search();
+            })
+            .Sortable()
+            .Filterable()
+            .ColumnMenu(false)
+            .Selectable()
+            .Scrollable(scr => scr.Height(500))
+            .Pageable(pageable => pageable
+            .Refresh(true)
+            .PageSizes(true)
+            .ButtonCount(5))
+            .DataSource(source => source
+            .Ajax()
+            .PageSize(60)
+            .ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(m => m.FilmId);
+            })
+            .Read(read => read.Url("/Movies/FilmActors?handler=Films_Read").Data("forgeryToken"))
+            @* .Read(read => read.Action("FilmInfo_Read", "Films")) *@
+            )
+            .ClientDetailTemplateId("detail-template")
+            .Events(e => e.Change("onChange"))
+        )
+    </div>
+    <div class="mt-3">
+        @(Html.Kendo().Grid<FilmActorsViewModel>()
+            .Name("child")
+            .HtmlAttributes(new { style = "font-size:15px" })
+            .Columns(columns =>
+            {
+                columns.Bound(m => m.ActorImage).ClientTemplate(
+                @"<div class='text-center'><img class='person-photo' " + "src=\"data:image/*;base64, #:ActorImage#\" /></div>")
+                .Filterable(false).Width(60).Media("(min-width: 100px)");
+                columns.Bound(m => m.ActorName).Width(300);
+                columns.Bound(m => m.Role).Width(300);
+                columns.Bound(m => m.Notes).Width(200);
+            })
+            .DataSource(ds => ds
+            .Ajax()
+            .PageSize(10)
+            .Model(model =>
+            {
+                model.Id(m => m.Id);
+            })
+            .Read(read => read.Url("/Movies/FilmActors?handler=FilmActors_Read&filmId=#=FilmId#").Data("forgeryToken")))
+            .Pageable(p => p
+            .Refresh(true)
+            .PageSizes(true)
+            .ButtonCount(5))
+            .Filterable()
+            .Sortable()
+        )
+    </div>
+
+</div>
+
+
+@section Scripts
+{
+    <script id="detail-template" type="text/template">
+        @(Html.Kendo().Grid<FilmActorsViewModel>()
+            .Name("grid_#=FilmId#")
+            .HtmlAttributes(new { style = "font-size:15px" })
+            .Columns(columns =>
+            {
+                columns.Bound(m => m.ActorName).Width(300);
+                columns.Bound(m => m.Role).Width(300);
+                columns.Bound(m => m.Notes).Width(200);
+            })
+            .DataSource(ds => ds
+            .Ajax()
+            .PageSize(10)
+            .Model(model =>
+            {
+                model.Id(m => m.Id);
+            })
+            .Read(read => read.Url("/Movies/FilmActors?handler=FilmActors_Read&filmId=#=FilmId#").Data("forgeryToken")))
+            @* .Read(read => read.Action("FilmActors_Read", "Films", new { filmId = "#=FilmId#" }))) *@
+            .Pageable(p => p
+            .Refresh(true)
+            .PageSizes(true)
+            .ButtonCount(5))
+            .Filterable()
+            .Sortable()
+            .ToClientTemplate()
+        )
+    </script>
+
+    <script type="text/javascript">
+
+        function forgeryToken() {
+            return kendo.antiForgeryTokens();
+        }
+
+        function onChange() {
+            var dataItem = this.dataItem(this.select());
+            var filmID = dataItem.FilmId;
+            $("#child").data("kendoGrid").dataSource.read({ filmId: filmID });
+        }
+
+        //function gridData {
+        //    var masterDataItem = e.sender.dataItem(e.masterRow);
+        //    var dataItem = this.tbody.find("tr.k-master-row").first();
+        //    var filmID = dataItem.FilmId;
+        //    return $.extend(true, {}, kendo.antiForgeryTokens(), { filmId: filmID });
+        //}
+
+    </script>
+}

@@ -1,0 +1,50 @@
+﻿
+@{
+    Layout = null;
+}
+
+@(Html.Kendo().Grid<ActorGalleryViewModel>()
+    .Name("gridGallery")
+    .HtmlAttributes(new { style = "font-size:16px" })
+    .Columns(columns =>
+    {
+        columns.ForeignKey(m => m.ActorId, (IEnumerable<Actor>)ViewData["actors"]!, "ActorId", "FullName")
+            .Width(200).Media("(min-width: 200px)");
+        columns.Bound(m => m.GalleryImage).Width(80).ClientTemplate(
+                @"<div class='text-center'><img class='gallery-photo' " + "src=\"data:image/*;base64, #:GalleryImage#\" /></div>")
+                .Filterable(false).Width(80).Media("(min-width: 100px)");
+        columns.Command(command => { command.Destroy(); command.Custom("\uD83D\uDD89" + " Edit").Click("RowEdit"); }).Width(200);
+    })
+    .ToolBar(toolbar =>
+    {
+        toolbar.Create();
+        toolbar.Save();
+    })
+    .Editable(editable => editable.Mode(GridEditMode.InCell))
+    .Navigatable()
+    .Sortable()
+    .Filterable()
+    .Scrollable(scr => scr.Height(300))
+    .Pageable(pageable => pageable
+    .Refresh(true)
+    .PageSizes(true)
+    .ButtonCount(5))
+    .DataSource(source => source
+    .Ajax()
+    .PageSize(40)
+    .Batch(true)
+    .ServerOperation(false)
+    .Model(model =>
+    {
+        model.Id(m => m.GalleryId);
+        model.Field(m => m.ActorId).Editable(false);
+        model.Field(m => m.GalleryImage).Editable(false);
+    })
+    .Create(create => create.Url("ActorSecondary?handler=GalleryCreate").Data("forgeryToken"))
+    .Read(read => read.Url("ActorSecondary?handler=GalleryRead").Data("forgeryToken"))
+    .Update(update => update.Url("ActorSecondary?handler=GalleryUpdate").Data("forgeryToken"))
+    .Destroy(destroy => destroy.Url("ActorSecondary?handler=GalleryDestroy").Data("forgeryToken"))
+    .Events(events => events.Error("error_handler2"))
+    )
+)
+

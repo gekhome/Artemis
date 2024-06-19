@@ -1,0 +1,43 @@
+﻿@page
+@model AccessDeniedModel
+@{
+    ViewData["Title"] = "Access denied";
+}
+
+<header class="container body-content center card">
+    <div class="d-inline-flex">
+        <img class="mx-4 mt-1" src="~/images/access-denied.png" width="50" height="50" />
+        <h1 class="text-danger flex-grow-1">@ViewData["Title"]</h1>
+    </div>
+    <hr/>
+    <h4 class="text-danger fw-semibold ps-2">You do not have access to this resource.</h4>
+</header>
+
+<div class="container body-content center mt-4">
+    <h5>You can try to sign in as a different user.</h5>
+    <div class="row mt-4 col-md-6">
+        <div class="col-md-2">
+            <a asp-page="/Account/Login" class="btn btn-primary text-light">Sign-in</a>
+        </div>
+        <div class="col-md-2">
+            <a asp-area="" asp-action="Index" asp-controller="Home" class="btn btn-info text-light">Home</a>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .center {
+        margin: auto;
+        width: 100%;
+        border: 1px solid lightgray;
+        padding: 10px;
+    }
+
+    p {
+        font-size: 1.2rem;
+        padding: 2px 4px;
+        margin: 2px 2px;
+        overflow-wrap: break-word;
+    }
+</style>

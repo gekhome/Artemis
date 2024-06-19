@@ -1,0 +1,19 @@
+﻿@page
+@model Artemis.Pages.Shared.UnderConstructionModel
+
+@{
+    ViewData["Title"] = "Under construction";
+}
+
+<div class="container">
+    <div class="card rounded-3 my-4 shadow text-center">
+        <div class="p-4">
+            <img class="me-2" src="~/images/under-construction-vector.jpg" width="900" height="400" style="margin:auto" />
+        </div>
+        <h3 class="text-primary fw-semibold ms-2">The requested page is currently under development.</h3>
+    </div>
+
+    <div class="mt-2 d-inline-flex float-end">
+        <a class="btn btn-primary fs-5" asp-action="Index" asp-controller="Home" >Home</a>
+    </div>
+</div>

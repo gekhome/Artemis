@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    string culture = CultureInfo.CurrentCulture.Name;
+    string cultureUI = CultureInfo.CurrentUICulture.Name;
+    bool showHeader = false;
+}
+
+@section Footer
+{
+    <partial name="_Footer" />
+}
+
+<div if="@showHeader" class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p class="pb-2">Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <div class="grid-container text-center">
+        <h6></h6>
+        <h6>Current Culture: @culture</h6>
+        <h6>Current UI Culture: @cultureUI</h6>
+        <h6></h6>
+    </div>
+</div>
+
+
+<div class="container ps-4 pe-4" id="carousel_main">
+
+    <!-- Carousel messaging -->
+    <partial name="_Carousel" />
+    <!-- Marketing messaging and featurettes -->
+    <partial name="_Marketing" />
+
+</div>

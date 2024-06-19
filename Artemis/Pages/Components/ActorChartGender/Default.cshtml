@@ -1,0 +1,56 @@
+﻿@model IEnumerable<ActorGenderViewModel>
+
+@{
+    string width = ViewBag.Width + "px";
+    string height = ViewBag.Height + "px";
+}
+
+<style>
+    .chart {
+        margin: auto;
+        min-width: @width;
+        min-height: @height;
+        box-shadow: 2px 2px 1px 1px #e6e6e6;
+        border-radius: 0.3rem;
+        background-color: whitesmoke;
+    }
+
+    .chart-area {
+        margin: auto;
+        min-width: @width;
+        min-height: @height;
+    }
+</style>
+
+<div class="my-2 chart">
+    @(Html.Kendo().Chart(Model)
+        .Name("chartGender")
+        .HtmlAttributes(new { @class = "chart-area" })
+        .Title(title => title
+        .Text("Distribution of actors by gender")
+        .Align(ChartTextAlignment.Center)
+        )
+        .Legend(legend => legend
+        .Visible(true)
+        .Position(ChartLegendPosition.Top)
+        )
+        .Series(series =>
+        {
+            series.Column(model => model.Percentage)
+            .ColorField("Color")
+            .CategoryField("Gender")
+            .Labels(labels => labels.Background("transparent").Visible(true).Format("{0:N0} %"));
+        })
+        .CategoryAxis(axis => axis
+        .MajorGridLines(lines => lines.Visible(false))
+        .Line(line => line.Visible(false))
+        )
+        .ValueAxis(axis => axis.Numeric()
+        .Max(100)
+        .MajorGridLines(lines => lines.Visible(true))
+        .Labels(labels => labels.Visible(true).Format("{0:N0} %"))
+        .Visible(true)
+        )
+        .Tooltip(tooltip => tooltip.Visible(true).Format("{0}%"))
+        )
+</div>

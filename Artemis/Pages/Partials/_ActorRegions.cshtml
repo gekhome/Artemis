@@ -1,0 +1,33 @@
+﻿
+@{
+    Layout = null;
+}
+
+@(Html.Kendo().Grid<ActorCountRegions>()
+    .Name("gridRegions")
+    .HtmlAttributes(new { style = "font-size:12px" })
+    .Columns(columns =>
+    {
+        columns.Bound(m => m.Region).Width(200);
+        columns.Bound(m => m.Number).Width(140).Format("{0:N0}");
+        columns.Bound(m => m.Percentage).Width(100).Format("{0:P1}");
+        columns.Bound(m => m.Total).Width(140).Format("{0:N0}");
+    })
+    .Sortable()
+    .Scrollable(scr => scr.Height(300))
+    .Pageable(pageable => pageable
+    .Refresh(true)
+    .PageSizes(true)
+    .ButtonCount(5))
+    .DataSource(source => source
+    .Ajax()
+    .PageSize(20)
+    .Batch(true)
+    .ServerOperation(false)
+    .Model(model =>
+    {
+        model.Id(m => m.RowId);
+    })
+    .Read(read => read.Url("ActorStatistics?handler=Regions_Read").Data("forgeryToken"))
+    )
+)

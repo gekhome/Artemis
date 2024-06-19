@@ -1,0 +1,69 @@
+﻿@model AppUserViewModel
+
+@{
+    Layout = null;
+}
+
+<div class="form-horizontal m-2">
+    <div class="body-content ml-2 mb-3">
+        <div class="col-12 mb-2">
+            <kendo-textbox for="UserName" name="UserName" placeholder="Username..." class="kendo-textbox">
+                <textbox-label content="Username:" floating="false" />
+            </kendo-textbox>
+            <span asp-validation-for="UserName" class="text-danger"></span>
+        </div>
+        <div class="col-12 mb-2">
+            <kendo-textbox for="FirstName" name="FirstName" placeholder="First name..." class="kendo-textbox">
+                <textbox-label content="First name:" floating="false" />
+            </kendo-textbox>
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+        <div class="col-12 mb-2">
+            <kendo-textbox for="LastName" name="LastName" placeholder="Last name..." class="kendo-textbox">
+                <textbox-label content="Last name:" floating="false" />
+            </kendo-textbox>
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+        <div class="col-12 mb-2">
+            <kendo-textbox for="Email" name="Email" placeholder="Email..." class="kendo-textbox">
+                <textbox-label content="Email address:" floating="false" />
+            </kendo-textbox>
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="col-12 mb-2">
+            <kendo-textbox for="Password" name="Password" placeholder="Password..." type="password" class="kendo-textbox">
+                <textbox-label content="Password:" floating="false" />
+            </kendo-textbox>
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+        <div class="col-12 mb-2">
+            <kendo-textbox for="Address" name="Address" placeholder="Street, number, zip, city..." class="kendo-textbox">
+                <textbox-label content="Address:" floating="false" />
+            </kendo-textbox>
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+        <div class="col-12 mb-2">
+            <kendo-textbox for="Country" name="Country" placeholder="Country..." class="kendo-textbox">
+                <textbox-label content="Country:" floating="false" />
+            </kendo-textbox>
+            <span asp-validation-for="Country" class="text-danger"></span>
+        </div>
+        <div class="col-12 mb-2">
+            <label for="BirthDate">Date of birth:</label>
+            <kendo-datepicker for="BirthDate" name="BirthDate" format="dd/MM/yyyy" style="width: 100%;" />
+            <span asp-validation-for="BirthDate" class="text-danger"></span>
+        </div>
+        <div class="col-12 mb-2">
+            <label class="form-label">Email Confirmed:</label>
+            <kendo-switch for="EmailConfirmed" name="EmailConfirmed" enabled="true" checked="true">
+                <messages checked="Yes" unchecked="No" />
+            </kendo-switch>
+        </div>
+        <div class="col-12 mb-2">
+            <label class="form-label">Phone number Confirmed:</label>
+            <kendo-switch for="PhoneConfirmed" name="PhoneConfirmed" enabled="true" checked="true">
+                <messages checked="Yes" unchecked="No" />
+            </kendo-switch>
+        </div>
+    </div>
+</div>

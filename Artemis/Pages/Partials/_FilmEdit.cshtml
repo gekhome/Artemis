@@ -1,0 +1,126 @@
+﻿@model FilmViewModel
+
+@{
+    Layout = null;
+}
+
+<div class="modal fade" id="modal-partial" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="min-width:700px;max-height:600px">
+            <div class="modal-header">
+                <h5 class="modal-title">Film Editor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <form method="post" asp-page-handler="FilmEdit" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <div class="modal-body form-horizontal">
+                    @Html.HiddenFor(model => model.FilmId)
+                    <div class="form-group">
+                        <label asp-for="Title" class="form-label"></label>
+                        <input type="text" asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PlotSummary" style="width: 100%;" class="form-label"></label>
+                        <textarea asp-for="PlotSummary" rows="6" cols="85"></textarea>
+                        <span asp-validation-for="PlotSummary" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ReleaseDate" class="form-label"></label>
+                        <kendo-datepicker name='ReleaseDate' for="ReleaseDate" format="dd/MM/yyyy"></kendo-datepicker>
+                        <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ReleaseYear" class="form-label"></label>
+                        <input type="number" asp-for="ReleaseYear" class="form-control" disabled />
+                        <span asp-validation-for="ReleaseYear" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="RunningTime" class="form-label"></label>
+                        <input type="number" asp-for="RunningTime" class="form-control" />
+                        <span asp-validation-for="RunningTime" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Language" class="form-label"></label>
+                        <kendo-dropdownlist name="Language" for="Language"
+                                            datatextfield="Language"
+                                            datavaluefield="LanguageId"
+                                            auto-bind="true">
+                            <datasource server-filtering="false">
+                                <transport>
+                                    <read url="@Url.PageLink(pageName:"/Movies/FilmMain", pageHandler:"Languages_Read")" />
+                                </transport>
+                            </datasource>
+                        </kendo-dropdownlist>
+                        <span asp-validation-for="Language" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Director" style="width: 100%;" class="form-label"></label>
+                        <input type="text" asp-for="Director" class="form-control" />
+                        <span asp-validation-for="Director" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Producer" style="width: 100%;" class="form-label"></label>
+                        <textarea type="text" asp-for="Producer" rows="2" cols="85"></textarea>
+                        <span asp-validation-for="Producer" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Budget" class="form-label"></label>
+                        <input type="number" asp-for="Budget" class="form-control" />
+                        <span asp-validation-for="Budget" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="BoxOffice" class="form-label"></label>
+                        <input type="number" asp-for="BoxOffice" class="form-control" />
+                        <span asp-validation-for="BoxOffice" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="TrailerLink" class="form-label"></label>
+                        <input type="text" asp-for="TrailerLink" class="form-control" />
+                        <span asp-validation-for="TrailerLink" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Rating" class="form-label"></label>
+                        <kendo-rating name="Rating" for="Rating" min="0" max="10">
+                            <label template="<span>#=value# out of #=maxValue#</span>" />
+                        </kendo-rating>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="SelectedGenres" class="form-label"></label>
+                        <kendo-multiselect name="SelectedGenres" for="SelectedGenres"
+                                           datatextfield="GenreName"
+                                           datavaluefield="GenreId">
+                            <datasource type="DataSourceTagHelperType.Custom" server-filtering="true">
+                                <transport>
+                                    <read url="@Url.PageLink(pageName: "/Movies/FilmMain", pageHandler: "Genres_Read")" />
+                                </transport>
+                            </datasource>
+                        </kendo-multiselect>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Poster" style="width: 100%;" class="col-md-2 form-label"></label>
+                        @if (Model?.Poster != null)
+                        {
+                            <img id="posterPicture" style="width:150px;height:225px; object-fit:cover; border: 1px solid dimgray; border-radius: 4px"
+                                 src="data:image/*;base64,@(Convert.ToBase64String(Model.Poster))">
+                        }
+                        else
+                        {
+                            <img id="posterPicture" style="width:150px;height:225px; object-fit:cover; border: 1px solid dimgray; border-radius:4px" src="">
+                        }
+                        <input type="file" accept=".png,.jpg,.jpeg,.gif,.tif,.tiff" asp-for="Poster"
+                               style="border:0px!important;padding: 0px;padding-top: 10px;padding-bottom: 30px;"
+                               onchange="document.getElementById('posterPicture').src = window.URL.createObjectURL(this.files[0])" />
+                        <span asp-validation-for="Poster" class="text-danger"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

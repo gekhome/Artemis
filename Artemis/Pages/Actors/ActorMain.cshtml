@@ -1,0 +1,153 @@
+﻿@page
+@model Artemis.Pages.Actors.ActorMainModel
+
+@{
+    ViewData["Title"] = "Actors management";
+}
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@Html.AntiForgeryToken()
+
+<partial name="_Message" for="StatusMessage" />
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between">
+        <page-header add-title="Actors management"></page-header>
+        <div class="d-inline-flex float-end">
+            <button class="gek-btn-success ms-2" onclick="RefreshGrid()">Refresh</button>
+            <a class="gek-btn-primary ms-2" asp-action="Index" asp-controller="Home">Home</a>
+        </div>
+    </div>
+    <hr />
+
+    <div class="mb-2">
+        @(Html.Kendo().Grid<ActorViewModel>()
+            .Name("grid")
+            .Columns(columns =>
+            {
+                columns.Bound(m => m.PhotoImage).ClientTemplate(
+                @"<div class='text-center'><img class='person-photo' " + "src=\"data:image/*;base64, #:PhotoImage#\" /></div>")
+                .Filterable(false).Width(80).Media("(min-width: 100px)");
+                columns.Bound(m => m.FullName).Width(300).Media("(min-width: 300px)");
+                columns.Bound(m => m.BirthDate).Format("{0:dd/MM/yyyy}").Width(160).Media("(min-width: 300px)");
+                columns.Bound(m => m.BirthPlace).Width(300).Media("(min-width: 300px)");
+                columns.ForeignKey(m => m.Country, (IEnumerable<Country>)ViewData["countries"]!, "CountryId", "Name").Width(200).Media("(min-width: 300px)");
+                columns.Command(command =>
+                {
+                    command.Destroy(); command.Custom("\uD83D\uDD89" + " Edit").Click("RowEdit");
+                }).Width(220).Media("(min-width: 300px)");
+                columns.Bound(m => m.ActorId).Title(" ").Filterable(false)
+                .ClientTemplate("<a class=\"gek-btn-default\" href='" + Url.PageLink("/Actors/ActorSecondary") +
+                "?actorId=#=ActorId#' target=_blank><i class=\"fa-solid fa-pen\"></i> More</a>")
+                .Width(120).Media("(min-width: 200px)");
+                })
+            .ToolBar(toolbar =>
+            {
+                toolbar.Create();
+                toolbar.Save();
+                toolbar.Search();
+            })
+            .Editable(editable => editable.Mode(GridEditMode.InCell))
+            .Navigatable()
+            .Sortable()
+            .Filterable()
+            .Scrollable(scr => scr.Height(550))
+            .ColumnMenu(false)
+            .Pageable(pageable => pageable
+            .Refresh(true)
+            .PageSizes(true)
+            .ButtonCount(10))
+            .DataSource(source => source
+            .Ajax()
+            .Batch(true)
+            .PageSize(60)
+            .ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(m => m.ActorId);
+                model.Field(m => m.ActorId).Editable(false);
+                model.Field(m => m.PhotoImage).Editable(false);
+                model.Field(m => m.Country).DefaultValue((int)ViewData["defaultCountry"]!);
+            })
+            .Create(create => create.Url("/Actors/ActorMain?handler=Create").Data("forgeryToken"))
+            .Read(read => read.Url("/Actors/ActorMain?handler=Read").Data("forgeryToken"))
+            .Update(update => update.Url("/Actors/ActorMain?handler=Update").Data("forgeryToken"))
+            .Destroy(destroy => destroy.Url("/Actors/ActorMain?handler=Destroy").Data("forgeryToken"))
+            .Events(events => events.Error("error_handler"))
+            )
+            .ClientDetailTemplateId("detail-template")
+            )
+    </div>
+</div>
+
+<div id="partialDiv">
+    <partial name="_ActorEdit" model="Model.Actor" />
+</div>
+
+<style>
+    p {
+        margin-bottom:0.5em;
+    }
+</style>
+
+@section Scripts
+{
+    <script type="text/template" id="detail-template">
+        <div class="card card-outline-secondary m-1 p-1">
+            <div class="d-inline-flex flex-row">
+                <img src="data:image/*;base64, #:PhotoImage#" class="me-4 poster"/>
+                <div class="d-inline-flex flex-column mt-2">
+                    <h4>#: FullName #</h4>
+                    <p class="long-text" style="max-width:800px;"><i>#: BioSummary #</i></p>
+                    <p><label class="fw-semibold">Birthplace:&nbsp;</label>#: BirthPlace #</p>
+                    <p><label class="fw-semibold">Country:&nbsp;</label>#: CountryName #</p>
+
+                    # var DOB = BirthDate.toLocaleDateString('en-GB'); #
+                    <p><label class="fw-semibold">Birth date:&nbsp;</label>#: DOB #</p>
+                    <p><label class="fw-semibold">Age:&nbsp;</label>#: Age #</p>
+
+                    # var height = Height.toFixed(2); #
+                    <p><label class="fw-semibold">Height:&nbsp;</label>#: height # m</p>
+                    <p class="long-text" style="max-width:800px"><label class="fw-semibold">Occupations:&nbsp;</label>#: Occupations #</p>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/javascript">
+
+        function returnFalse() {
+            return false;
+        }
+
+        function forgeryToken() {
+            return kendo.antiForgeryTokens();
+        }
+
+        function RowEdit(e) {
+            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+            var actorID = dataItem.ActorId;
+
+            if (!(actorID > 0)) {
+                MessageBoxAlert("You must first save the record before editing.", "Error");
+                return;
+            }
+
+            // Handle data source of partial view
+            $.ajax({
+                url: '/Actors/ActorMain?handler=ActorRecord&id=' + actorID,
+                type: 'GET',
+                data: "",
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    $("#partialDiv").html(response);
+                    $("#modal-partial").modal('show');
+                },
+                failure: function () {
+                    MessageBoxAlert("There was a problem acquiring data.", "Error");
+                }
+            });
+        }
+
+    </script>
+}

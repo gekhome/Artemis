@@ -1,0 +1,37 @@
+﻿<!-- Top Navgigation Bar -->
+
+<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom mb-3 fixed-top">
+    <div class="container-fluid ps-2">
+        <!-- This button makes the navbar shaky! -->
+@*        
+        <button type="button" id="sidebarCollapse" class="btn btn-outline-secondary nav-link" onclick="toggleNav()" title="Show/Hide sidebar">
+            <i class="fas fa-align-justify text-light"></i>
+        </button>
+*@
+        <span id="toggle-icon" class="navbar-toggler ps-4 d-flex flex-column" onclick="toggleSidebar()" role="button" title="Show/hide navigation menu">
+            <span id="top-bar" class="toggler-icon top-bar"></span>
+            <span id="mid-bar" class="toggler-icon middle-bar"></span>
+            <span id="bot-bar" class="toggler-icon bottom-bar"></span>
+        </span>
+
+        <img class="ps-4 pe-2" src="~/images/letter-a-logo-color.png" width="70px" height="36px" />
+        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Artemis</a>
+        <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+            <ul class="navbar-nav flex-grow-1">
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="About">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Contact">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                </li>
+            </ul>
+            <partial name="_LoginPartial" />
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,96 @@
+﻿@model FilmViewModel
+
+@{
+    ViewData["Title"] = "Manage Films";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between">
+        <page-header add-title="Films management"></page-header>
+        <div class="d-inline-flex float-end">
+            <button class="gek-btn-success" onclick="RefreshGrid()">Refresh</button>
+            <a class="gek-btn-primary ms-2" asp-action="Index" asp-controller="Home">Home</a>
+        </div>
+    </div>
+    <hr />
+
+    <div class="mb-2">
+        @(Html.Kendo().Grid<FilmViewModel>()
+            .Name("grid")
+            .Columns(columns =>
+            {
+                columns.Bound(m => m.PosterImage).ClientTemplate(
+                @"<div class='text-center'><img class='grid-photo' " + "src=\"data:image/*;base64, #:PosterImage#\" /></div>")
+                .Filterable(false).Width(80);
+                columns.Bound(m => m.Title).Width(300);
+                columns.Bound(m => m.ReleaseDate).Format("{0:dd/MM/yyyy}").Width(120);
+                columns.Bound(m => m.RunningTime).Width(120);
+                columns.ForeignKey(m => m.Language, (IEnumerable<Languages>)ViewData["languages"]!, "LanguageId", "Language").Width(150);
+@*                columns.Bound(m => m.FilmId).ClientTemplate("<a href='" + Url.Action("GetFilmRecord", "Films") + "?Id=#=FilmId#'>Test</a>").Width(50);
+*@                columns.Command(command => { command.Edit(); command.Destroy(); command.Custom("\uD83D\uDD89" + " Form").Click("RowEdit"); }).Width(260);
+            })
+            .ToolBar(toolbar =>
+            {
+                toolbar.Create();
+                toolbar.Search();
+            })
+            .Editable(editable => editable.Mode(GridEditMode.InLine))
+            .Navigatable()
+            .Sortable()
+            .Filterable()
+            .Scrollable(scr => scr.Height(500))
+            .Pageable(pageable => pageable
+            .Refresh(true)
+            .PageSizes(true)
+            .ButtonCount(5))
+            .DataSource(source => source
+            .Ajax()
+            .PageSize(60)
+            .ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(m => m.FilmId);
+                model.Field(m => m.PosterImage).Editable(false);
+                model.Field(m => m.Language).DefaultValue((int)ViewData["defaultLanguage"]!);
+            })
+            .Create(create => create.Action("Films_Create", "Films"))
+            .Read(read => read.Action("Films_Read", "Films"))
+            .Update(update => update.Action("Films_Update", "Films"))
+            .Destroy(destroy => destroy.Action("Films_Destroy", "Films"))
+            .Events(events => events.Error("error_handler"))
+            )
+        )
+    </div>
+</div>
+
+
+<div id="partialDiv">
+    <partial name="_FilmForm" />
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        function RowEdit(e) {
+            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+            var filmID = dataItem.FilmId;
+            // Handle data source of partial view
+            $.ajax({
+                url: '@Url.Action("GetFilmRecord", "Films")?Id=' + filmID,
+                type: 'GET',
+                data: "",
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    $("#partialDiv").html(data);
+                    $("#modal-partial").modal('show');
+                },
+                error: function () {
+                    MessageBoxAlert("There was a problem acquiring data.", "Error");
+                }
+            });
+        }
+
+    </script>
+}
+

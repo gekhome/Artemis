@@ -1,0 +1,120 @@
+﻿
+@{
+    ViewData["Title"] = "Music Studios";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between">
+        <page-header add-title="Music studios setup"></page-header>
+        <div class="d-flex float-end me-2"><a class="gek-btn-primary" asp-action="Index" asp-controller="Home">Home</a></div>
+    </div>
+    <hr />
+
+    <div class="mb-2">
+        @(Html.Kendo().Grid<MusicStudio>()
+            .Name("grid")
+            .HtmlAttributes(new { style = "height:600px;" })
+            .Columns(columns =>
+            {
+                columns.Bound(m => m.LogoImage).Filterable(false).Title("Logo").Width(60).ClientTemplate(
+                @"<div class='text-center'><img class='rectangle-photo' " + "src=\"data:image/*;base64, #:LogoImage#\" /></div>");
+                columns.Bound(m => m.Name).Width(300);
+                columns.Command(command => { command.Edit(); command.Destroy(); command.Custom("\uD83D\uDD89" + " Form").Click("RowEdit"); }).Width(240);
+            })
+            .ToolBar(toolbar =>
+            {
+                toolbar.Create();
+                toolbar.Excel();
+                toolbar.Search();
+            })
+            .Editable(editable => editable.Mode(GridEditMode.InLine))
+            .Navigatable()
+            .Filterable()
+            .Pageable(pageable => pageable
+            .Refresh(true)
+            .PageSizes(true)
+            .ButtonCount(10))
+            .Sortable()
+            .Scrollable()
+            .DataSource(dataSource => dataSource
+            .Ajax()
+            .ServerOperation(false)
+            .PageSize(60)
+            .Model(model =>
+            {
+                model.Id(m => m.StudioId);
+                model.Field(m => m.LogoImage).Editable(false);
+            })
+            .Create(update => update.Action("MusicStudio_Create", "Setup"))
+            .Read(read => read.Action("MusicStudio_Read", "Setup"))
+            .Update(update => update.Action("MusicStudio_Update", "Setup"))
+            .Destroy(update => update.Action("MusicStudio_Destroy", "Setup"))
+            .Events(events => events.Error("error_handler"))
+            )
+            .ClientDetailTemplateId("detail-template")
+        )
+    </div>
+</div>
+
+
+<div id="partialDiv">
+    <partial name="MusicStudioPartial" />
+</div>
+
+@section Scripts
+{
+    <script type="text/template" id="detail-template">
+        <div class="card card-outline-secondary m-1 p-1 kg-detail">
+            <div class="d-inline-flex">
+                <img src="data:image/*;base64, #:LogoImage#" class="me-4"/>
+                <h3>#:Name#</h3>
+            </div>
+            <div class="my-2">
+                <p class="long-text"><i>#:Description#</i></p>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/javascript">
+
+        function RefreshGrid() {
+            $("#grid").data("kendoGrid").dataSource.read();
+        }
+
+        function error_handler(e) {
+            if (e.errors) {
+                var message = "Errors:<br/>";
+                $.each(e.errors, function (key, value) {
+                    if ('errors' in value) {
+                        $.each(value.errors, function () {
+                            message += this + "<br/>";
+                        });
+                    }
+                });
+                MessageBoxAlert(message);
+                RefreshGrid();
+            }
+        }
+
+        function RowEdit(e) {
+            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+            var studioID = dataItem.StudioId;
+
+            // Handle data source of partial view
+            $.ajax({
+                url: '@Url.Action("GetMusicStudioRecord", "Setup")?Id=' + studioID,
+                type: 'GET',
+                data: "",
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    $("#partialDiv").html(data);
+                    $("#modal-partial").modal('show');
+                },
+                error: function () {
+                    MessageBoxAlert("There was a problem acquiring data.", "Error");
+                }
+            });
+        }
+
+    </script>
+}
